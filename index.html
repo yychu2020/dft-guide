@@ -3,29 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="面向化学人的 DFT、VASP、ASE、过渡态搜索、恒电势、机器学习势和软件安装图解手册。">
+<meta name="description" content="面向化学人的 DFT、泛函、催化理论、VASP、ASE、过渡态搜索、自由能、恒电势和软件对比的图解手册。">
 <title>原子实验室 · 化学人的 DFT 与 VASP 图解手册</title>
 <style>
 :root{--ink:#192d2a;--muted:#546863;--paper:#f6f4eb;--surface:#fffdf7;--line:#d6ded4;--teal:#166052;--accent:#b64426;--soft:#e5eee4;--warm:#f6e6d8;--mono:'IBM Plex Mono','Cascadia Code',Consolas,monospace;--serif:'Noto Serif SC','Songti SC',SimSun,serif;color-scheme:light}
-*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:84px}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,'Microsoft YaHei','PingFang SC',system-ui,sans-serif;line-height:1.7}button,input{font:inherit}button{cursor:pointer}img,svg{max-width:100%}a{color:var(--teal);text-underline-offset:.23em}a:hover{color:var(--accent)}:focus-visible{outline:3px solid #bc5c35;outline-offset:4px}[hidden]{display:none!important}p{margin:0 0 1em}h1,h2,h3,h4{line-height:1.28;margin:0}h2{font-size:clamp(1.8rem,3.3vw,2.75rem);letter-spacing:-.045em}h3{font-size:1.16rem}code,kbd,.mono{font-family:var(--mono);font-size:.92em}p code,li code,td code{color:#104e42;background:#e9f0e7;padding:.12em .35em;border-radius:4px;overflow-wrap:anywhere}ul,ol{padding-left:1.4em}figure{margin:0}figcaption,.note{font-size:.84rem;color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.skip{position:fixed;z-index:10;top:8px;left:8px;transform:translateY(-160%);padding:.6rem 1rem;background:var(--surface)}.skip:focus{transform:none}
-.mast{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.mast-inner{max-width:1380px;margin:auto;padding:.85rem clamp(1rem,4vw,3.75rem);display:flex;justify-content:space-between;align-items:center;gap:1rem}.brand{display:inline-flex;align-items:center;gap:.63rem;text-decoration:none;font-weight:800;white-space:nowrap;color:var(--ink)}.brand-symbol{width:33px;height:33px;display:grid;place-items:center;border-radius:8px;background:var(--teal);color:#fffdf7}.mast-nav{display:flex;gap:clamp(.65rem,2vw,1.85rem);align-items:center;font-size:.87rem}.mast-nav a{color:var(--ink);text-decoration:none;white-space:nowrap}.mast-nav a:hover{color:var(--accent)}.mobile-nav{display:none}
+*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,'Microsoft YaHei','PingFang SC',system-ui,sans-serif;line-height:1.7}button,input{font:inherit}button{cursor:pointer}img,svg{max-width:100%}a{color:var(--teal);text-underline-offset:.23em}a:hover{color:var(--accent)}:focus-visible{outline:3px solid #bc5c35;outline-offset:4px}[hidden]{display:none!important}p{margin:0 0 1em}h1,h2,h3,h4{line-height:1.28;margin:0}h2{font-size:clamp(1.8rem,3.3vw,2.75rem);letter-spacing:-.045em}h3{font-size:1.16rem}code,kbd,.mono{font-family:var(--mono);font-size:.92em}p code,li code,td code{color:#104e42;background:#e9f0e7;padding:.12em .35em;border-radius:4px;overflow-wrap:anywhere}ul,ol{padding-left:1.4em}figure{margin:0}figcaption,.note{font-size:.84rem;color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.skip{position:fixed;z-index:10;top:8px;left:8px;transform:translateY(-160%);padding:.6rem 1rem;background:var(--surface)}.skip:focus{transform:none}
+.mast{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}.mast-inner{max-width:1380px;margin:auto;padding:.85rem clamp(1rem,4vw,3.75rem);display:flex;justify-content:space-between;align-items:center;gap:1rem}.brand{display:inline-flex;align-items:center;gap:.63rem;text-decoration:none;font-weight:800;white-space:nowrap;color:var(--ink)}.brand-symbol{width:33px;height:33px;display:grid;place-items:center;border-radius:8px;background:var(--teal);color:#fffdf7}.mast-nav{display:flex;gap:clamp(.65rem,2vw,1.85rem);align-items:center;font-size:.87rem}.mast-nav a{color:var(--ink);text-decoration:none;white-space:nowrap}.mast-nav a:hover{color:var(--accent)}
 .hero-wrap{background:#ecefe3;border-bottom:1px solid #ced8c9}.hero{max-width:1380px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(2rem,5vw,5rem);align-items:center;padding:clamp(2.7rem,6vw,5.8rem) clamp(1rem,4vw,3.75rem)}.eyebrow,.section-kicker{color:var(--teal);font-size:.78rem;font-weight:800;letter-spacing:.13em;display:flex;align-items:center;gap:.55rem;margin:0 0 1rem}.eyebrow::before,.section-kicker::before{content:'';display:inline-block;width:1.5rem;height:1px;background:currentColor;flex:none}.hero h1{font-size:clamp(2.7rem,5.4vw,5.25rem);font-weight:850;letter-spacing:-.075em;line-height:1.09}.hero h1 span{display:block;color:var(--teal)}.hero-lede{max-width:34rem;font-size:clamp(1.02rem,1.5vw,1.2rem);color:var(--muted);margin:1.5rem 0 1.65rem}.hero-actions{display:flex;gap:.65rem;flex-wrap:wrap}.cta{min-height:42px;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;border-radius:7px;border:1px solid #9fb7a8;padding:.55rem .83rem;font-size:.86rem;font-weight:750}.cta.primary{background:var(--teal);color:white;border-color:var(--teal)}.cta.primary:hover{background:#10473e}.cta.secondary:hover{background:var(--surface)}
 .hero-figure{background:#142e29;color:#eaf2e4;border:1px solid #213c35;border-radius:16px;box-shadow:0 12px 28px #1e3d2b23;overflow:hidden}.hero-figure svg{width:100%;height:auto;display:block}.hero-figure figcaption{border-top:1px solid #39534a;padding:.7rem 1rem;color:#d5e4d7;display:flex;gap:.75rem;justify-content:space-between;flex-wrap:wrap;font-size:.75rem}.legend-dot{display:inline-block;width:.63em;height:.63em;border-radius:100%;background:#ff9c70;margin-right:.35rem}
 .reading{max-width:1380px;margin:auto;padding:0 clamp(1rem,4vw,3.75rem);display:grid;grid-template-columns:12rem minmax(0,1fr);gap:clamp(1.5rem,4.5vw,4.25rem)}.side{align-self:start;position:sticky;top:100px;padding:2rem 0;color:var(--muted)}.side p{font-size:.76rem;font-weight:800;letter-spacing:.1em;margin:0 0 .75rem}.side a{display:block;border-left:2px solid var(--line);padding:.36rem .7rem;color:var(--muted);text-decoration:none;font-size:.88rem}.side a:hover,.side a[aria-current=true]{color:var(--teal);border-color:var(--teal);background:#e8ede3}.chapter{padding:clamp(2.7rem,6vw,5rem) 0;border-bottom:1px solid var(--line);min-width:0}.chapter .section-intro{font-size:1.05rem;color:var(--muted);max-width:47rem;margin:.78rem 0 1.6rem}.lead-grid,.two-up,.three-up{display:grid;gap:1rem}.lead-grid{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:start}.two-up{grid-template-columns:repeat(2,minmax(0,1fr))}.three-up{grid-template-columns:repeat(3,minmax(0,1fr))}.panel,.concept,.viz{background:var(--surface);border:1px solid var(--line);border-radius:12px;min-width:0}.panel,.concept{padding:clamp(.85rem,2vw,1.3rem)}.panel h3,.concept h3{margin-bottom:.5rem}.panel p:last-child,.concept p:last-child{margin-bottom:0}.concept p{font-size:.93rem;color:var(--muted)}.viz{padding:.9rem 1rem}.viz svg{width:100%;height:auto;display:block}.subheading{margin:1.8rem 0 .75rem}.table-shell{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}table{width:100%;border-collapse:collapse;text-align:left;font-size:.9rem}th,td{padding:.62rem .85rem;vertical-align:top;border-bottom:1px solid var(--line)}th{background:var(--soft);font-weight:750}tr:last-child td{border-bottom:0}.quiz{background:var(--soft);border:1px solid #c9dacb;border-radius:10px;margin:1.25rem 0 0;padding:.65rem 1rem}.quiz summary{font-weight:700;cursor:pointer;color:#164c40}.quiz p{margin:.55rem 0 .15rem}.source-row{font-size:.84rem;color:var(--muted);margin:1rem 0 0;display:flex;flex-wrap:wrap;gap:.35rem .85rem}.callout{background:var(--warm);border-left:3px solid var(--accent);padding:.65rem .9rem;margin:.9rem 0;border-radius:0 7px 7px 0;font-size:.9rem}.tag{display:inline-block;font:700 .75rem var(--mono);color:var(--teal);margin-bottom:.45rem}.tabs,.actions{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}.tabs button,.actions button,.copy{border:1px solid #afc1b4;color:var(--teal);background:var(--surface);padding:.35rem .68rem;border-radius:6px;font-size:.84rem;font-weight:700;min-height:38px}.tabs button[aria-pressed=true],.actions button.main-action{background:var(--teal);color:white;border-color:var(--teal)}.tabs button:hover,.actions button:hover,.copy:hover{box-shadow:inset 0 0 0 1px currentColor}.scf-stage{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}.scf-stage article{border:1px solid var(--line);padding:.75rem;border-radius:7px}.scf-stage article[data-active=true]{background:var(--soft);border-color:#73a794}.scf-stage strong{display:block;margin-bottom:.2rem}.scf-status{min-height:3.5em;font-size:.9rem;color:var(--muted);margin:.6rem 0 0}.step-file{border-radius:8px;background:#172e29;color:#e4eee3;overflow:hidden}.step-file header{padding:.55rem .85rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;border-bottom:1px solid #3b544b}.step-file pre{margin:0;padding:.85rem;overflow:auto;font-size:.84rem;line-height:1.65;font-family:var(--mono)}.code-comment{color:#b4d0ba}.copy-status{font-size:.8rem;color:var(--muted);margin:.35rem 0 0;min-height:1.6em}.conv-output{display:block;margin:.3rem 0;font-weight:750;color:var(--teal)}.reference-list{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-top:1rem}.reference-list article{padding:.85rem;border:1px solid var(--line);border-radius:9px;background:var(--surface)}.reference-list h3{margin-bottom:.3rem}
-@media(max-width:980px){.reading{grid-template-columns:9.2rem minmax(0,1fr);gap:1.4rem}.hero{gap:2rem}.lead-grid{grid-template-columns:1fr}}@media(max-width:900px){html{scroll-padding-top:75px}.mast-nav{display:none}.mobile-nav{display:block;position:relative}.mobile-nav summary{cursor:pointer;font-size:.9rem;color:var(--teal);font-weight:750}.mobile-nav nav{position:absolute;right:0;top:calc(100% + .5rem);background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 5px 15px #192d2a20;min-width:12rem;padding:.5rem}.mobile-nav nav a{display:block;padding:.38rem .45rem;text-decoration:none}}@media(max-width:740px){.side{display:none}.hero,.reading{grid-template-columns:1fr}.hero{padding-top:2.2rem;padding-bottom:2rem}.hero h1{font-size:clamp(2.65rem,9vw,4rem)}.reading{display:block}.three-up{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:490px){.two-up,.three-up,.reference-list{grid-template-columns:1fr}.cta{font-size:.8rem}.hero-actions{gap:.4rem}.hero-figure figcaption{gap:.15rem .65rem}th,td{padding:.55rem .62rem}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+@media(max-width:980px){.reading{grid-template-columns:9.2rem minmax(0,1fr);gap:1.4rem}.hero{gap:2rem}.lead-grid{grid-template-columns:1fr}}@media(max-width:900px){.mast-nav{display:none}}@media(max-width:740px){.side{display:none}.hero,.reading{grid-template-columns:1fr}.hero{padding-top:2.2rem;padding-bottom:2rem}.hero h1{font-size:clamp(2.65rem,9vw,4rem)}.reading{display:block}.three-up{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:490px){.two-up,.three-up,.reference-list{grid-template-columns:1fr}.cta{font-size:.8rem}.hero-actions{gap:.4rem}.hero-figure figcaption{gap:.15rem .65rem}th,td{padding:.55rem .62rem}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 .concept-art{display:block;width:100%;height:auto;margin:0 0 .7rem;background:#edf2e9;border-radius:6px}.two-up>*{min-width:0}.step-file pre code{font-size:inherit}.step-file pre:focus-visible{outline-offset:-3px}
 .job-flow{margin:0 0 1rem;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem;padding:0;list-style:none}.job-flow li{position:relative;background:var(--soft);border:1px solid #c9dacb;border-radius:7px;padding:.55rem .7rem;font-size:.8rem;color:var(--muted)}.job-flow strong{display:block;color:var(--teal);font-size:.94rem}.job-flow li:not(:last-child)::after{content:'→';position:absolute;top:50%;right:-1.05rem;transform:translateY(-50%);color:var(--teal)}
 @media(max-width:490px){.two-up,.three-up,.reference-list{grid-template-columns:minmax(0,1fr)}}
 @media(min-width:741px) and (max-width:1100px){.mast-nav{gap:.6rem;font-size:.82rem}.mast-inner{padding-inline:1rem}}
-.side{max-height:calc(100dvh - 100px);overflow:auto}.mobile-nav nav{max-height:calc(100dvh - 5rem);overflow:auto}
+ html{scroll-padding-top:var(--mast-offset,84px)}
+ .mast-nav{margin-inline-start:auto}
+ .chapter-menu{display:block;position:relative;flex:none}
+ .chapter-menu summary{cursor:pointer;font-size:.9rem;color:var(--teal);font-weight:750}
+ .chapter-menu nav{position:absolute;right:0;top:calc(100% + .5rem);min-width:12.5rem;max-height:calc(100dvh - 5rem);overflow:auto;overscroll-behavior:contain;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 5px 15px #192d2a20;padding:.45rem}
+ .chapter-menu nav a{display:block;padding:.36rem .55rem;text-decoration:none;border-radius:4px;color:var(--ink)}
+ .chapter-menu nav a:hover,.chapter-menu nav a[aria-current="location"]{background:var(--soft);color:var(--teal)}
+ .side{top:var(--mast-offset,84px);max-height:calc(100dvh - var(--mast-offset,84px));overflow:auto}
+ .side a[aria-current="location"]{color:var(--teal);border-color:var(--teal);background:#e8ede3;font-weight:750}
+ .mast-nav a[aria-current="location"]{color:var(--teal);text-decoration:underline;text-underline-offset:.3em}
+ .xc-ladder{list-style:none;padding:0;margin:0;display:grid;gap:.68rem;counter-reset:rung}
+ .xc-ladder li{counter-increment:rung;display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.75rem;margin-inline-start:var(--rung-offset,0);background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid #3c7b69;border-radius:9px;padding:.8rem .92rem}
+ .xc-ladder li::before{content:counter(rung);display:grid;place-items:center;width:2rem;height:2rem;border-radius:7px;background:var(--teal);color:white;font-weight:750}
+ .xc-ladder li:nth-child(2){--rung-offset:4%}.xc-ladder li:nth-child(3){--rung-offset:8%}.xc-ladder li:nth-child(4){--rung-offset:12%}.xc-ladder li:nth-child(5){--rung-offset:16%}
+ .xc-ladder h3 span{display:inline-block;font-size:.85rem;font-weight:600;color:var(--muted);margin-inline-start:.35rem}
+ .xc-ladder p{margin:.26rem 0 0;font-size:.93rem}.xc-ladder .xc-setting{color:var(--teal);font-size:.85rem}
+ .xc-notes{margin-top:1rem}
+ .catalysis-figure{align-self:start}.catalysis-figure figcaption{margin-top:.55rem}
+ .catalysis-models{display:grid;gap:.75rem}
+ .science-equation{background:var(--soft);border-radius:7px;padding:.55rem .7rem;margin:.6rem 0 .75rem;overflow-x:auto}
+ .science-equation math{font-size:clamp(1rem,1.8vw,1.22rem);width:max-content;min-width:100%}
+ .engine-table table{min-width:680px}.engine-table tbody th{background:var(--surface);border-bottom:1px solid var(--line);white-space:nowrap}
+ .engine-table tbody tr:nth-child(even)>*{background:#f3f5ee}
+ @media(max-width:740px){html:not(.chapters-ready) .side{display:block;position:static;max-height:none}.xc-ladder li:nth-child(n){--rung-offset:0}}
+ @media(max-width:490px){.xc-notes{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body id="top">
 <a class="skip" href="#main">跳到正文</a>
 <header class="mast"><div class="mast-inner">
   <a class="brand" href="#top"><span class="brand-symbol" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor"><ellipse cx="14" cy="14" rx="11" ry="4.2" transform="rotate(45 14 14)"/><ellipse cx="14" cy="14" rx="11" ry="4.2" transform="rotate(-45 14 14)"/><circle cx="14" cy="14" r="2" fill="currentColor"/></svg></span>原子实验室</a>
-  <nav class="mast-nav" aria-label="主要导航"><a href="#dft">DFT 基础</a><a href="#workflow">VASP 流程</a><a href="#parameters">参数手册</a><a href="#path">过渡态</a><a href="#free-energy">自由能</a><a href="#constant-potential">恒电势</a><a href="#ml">机器学习势</a><a href="#ase">ASE</a><a href="#linux-cli">Linux 命令行</a><a href="#installation">软件安装</a><a href="#practice">实战案例</a></nav>
-  <details class="mobile-nav"><summary>学习目录</summary><nav aria-label="移动端导航"><a href="#overview">网站导览</a><a href="#dft">DFT 基础</a><a href="#workflow">VASP 流程</a><a href="#parameters">参数手册</a><a href="#path">过渡态搜索</a><a href="#free-energy">自由能与增强采样</a><a href="#constant-potential">恒电势</a><a href="#ml">机器学习势</a><a href="#ase">ASE 建模与计算</a><a href="#linux-cli">Linux 命令行</a><a href="#installation">软件安装</a><a href="#examples">输入示例</a><a href="#practice">实战案例</a><a href="#frontiers">前沿方向</a><a href="#references">参考资料</a></nav></details>
+  <nav class="mast-nav" aria-label="常用入口">
+    <a href="#dft">DFT 基础</a><a href="#parameters">参数速查</a><a href="#catalysis">催化理论</a><a href="#path">过渡态</a><a href="#practice">实战案例</a>
+  </nav>
+  <details class="chapter-menu" hidden>
+    <summary>学习目录</summary>
+    <nav aria-label="全部章节"></nav>
+  </details>
 </div></header>
 <main id="main">
 <div class="hero-wrap"><div class="hero">
@@ -55,7 +84,30 @@
   </svg><figcaption><span><i class="legend-dot"></i>迁移的氧原子</span><span>理想化晶体表面 · 教学示意</span></figcaption></figure>
 </div></div>
 <div class="reading">
-<aside class="side"><p>学习目录</p><nav aria-label="章节目录"><a href="#overview">网站导览</a><a href="#dft">DFT 在算什么</a><a href="#workflow">VASP 怎么跑</a><a href="#parameters">参数速查</a><a href="#path">过渡态与路径</a><a href="#free-energy">自由能与增强采样</a><a href="#constant-potential">恒电势</a><a href="#ml">机器学习势</a><a href="#ase">ASE 建模与计算</a><a href="#linux-cli">Linux 命令行</a><a href="#installation">软件安装</a><a href="#examples">体系与输入示例</a><a href="#practice">Pt(111) 实战案例</a><a href="#frontiers">前沿方向</a><a href="#references">参考资料</a></nav></aside>
+<aside class="side" aria-labelledby="chapter-list-label">
+  <p id="chapter-list-label">学习目录</p>
+  <nav id="chapter-list" aria-label="章节目录">
+    <a href="#overview">网站导览</a>
+    <a href="#dft">DFT 基础</a>
+    <a href="#functionals">泛函与雅各布天梯</a>
+    <a href="#workflow">VASP 工作流</a>
+    <a href="#parameters">VASP 参数速查</a>
+    <a href="#catalysis">Nørskov 催化理论</a>
+    <a href="#path">过渡态与路径</a>
+    <a href="#constant-potential">恒电势</a>
+    <a href="#ml">机器学习势</a>
+    <a href="#ase">ASE 建模与计算</a>
+    <a href="#examples">体系与输入示例</a>
+    <a href="#software-comparison">VASP 同类软件对比</a>
+    <a href="#installation">软件安装</a>
+    <a href="#linux-cli">Linux 命令行</a>
+    <a href="#practice">Pt(111) 实战案例</a>
+    <a href="#free-energy">自由能与增强采样</a>
+    <a href="#frontiers">前沿方向</a>
+    <a href="#references">参考资料</a>
+    <a href="#contact">支持与联系</a>
+  </nav>
+</aside>
 <div class="chapters">
 <section id="overview" class="chapter" aria-labelledby="overview-title">
   <p class="section-kicker">网站导览</p>
@@ -68,9 +120,9 @@
   </div>
   <h3 class="subheading">第一次学，建议这样走</h3>
   <ol class="home-route">
-    <li><div><strong>先看懂计算在做什么</strong><p>读 DFT 和 VASP 工作流，重点看电子与离子双层循环。遇到陌生的设置，再查参数手册。</p><a href="#dft">DFT 基础</a> · <a href="#workflow">VASP 工作流</a> · <a href="#parameters">参数手册</a></div></li>
-    <li><div><strong>把环境和结构搭起来</strong><p>先熟悉 Linux 命令和输入编辑，确认集群上的程序，再用 ASE 建表面和吸附构型。</p><a href="#linux-cli">Linux 命令行</a> · <a href="#installation">软件安装</a> · <a href="#ase">ASE 建模</a> · <a href="#examples">输入示例</a></div></li>
-    <li><div><strong>做完一条吸附与扩散路线</strong><p>用 Pt(111) 上的 H 练习参考能量、收敛检查、NEB 和虚频验证。遇到看不懂的算法，返回二维势能面动画。</p><a href="#practice">Pt(111) 实战</a> · <a href="#path">过渡态动画</a></div></li>
+    <li><div><strong>先看懂计算在做什么</strong><p>读 DFT 和 VASP 工作流，重点看电子与离子双层循环。用雅各布天梯比较泛函，遇到陌生的设置再查参数手册。</p><a href="#dft">DFT 基础</a> · <a href="#functionals">泛函天梯</a> · <a href="#workflow">VASP 工作流</a> · <a href="#parameters">参数手册</a></div></li>
+    <li><div><strong>把环境和结构搭起来</strong><p>先熟悉 Linux 命令和输入编辑，比较能做这类计算的软件，确认集群上的程序，再用 ASE 建表面和吸附构型。</p><a href="#software-comparison">软件对比</a> · <a href="#linux-cli">Linux 命令行</a> · <a href="#installation">软件安装</a> · <a href="#ase">ASE 建模</a> · <a href="#examples">输入示例</a></div></li>
+    <li><div><strong>做完一条吸附与扩散路线</strong><p>用 Pt(111) 上的 H 练习参考能量、收敛检查、NEB 和虚频验证。结合催化理论判断吸附能和势垒各能说明什么。</p><a href="#catalysis">催化理论</a> · <a href="#practice">Pt(111) 实战</a> · <a href="#path">过渡态动画</a></div></li>
     <li><div><strong>按研究问题继续选方法</strong><p>关心电极电势就读恒电势，关心采样成本就读机器学习势。想从静态势垒走向有限温度自由能，可以接着做增强采样练习，再看速率与量子效应。</p><a href="#constant-potential">恒电势</a> · <a href="#ml">机器学习势</a> · <a href="#free-energy">自由能与增强采样</a> · <a href="#frontiers">前沿方向</a></div></li>
   </ol>
 </section>
@@ -88,7 +140,7 @@
   <p class="section-kicker">DFT 基础</p><h2>原子摆在这里，能量是多少？</h2><p class="section-intro">先把原子核的位置定住，让电子在这个框架里重新分布。密度泛函理论（DFT）用电子密度来描述电子分布，并估算体系的能量。把氧分别放在 A 和 B，就能比较这两个构型的能量。</p>
   <div class="lead-grid">
     <div><div class="concept"><h3>看电子云，再算原子受力</h3><p>电子密度告诉你空间里哪里电子多。Kohn–Sham 方法借助一组辅助轨道得到这个密度。原子挪一点，能量怎么变？这个变化率取负号，就是该方向上的力。结构优化反复用力找附近的低能构型。</p></div>
-    <div class="concept" style="margin-top:.75rem"><h3>泛函决定怎样近似电子相互作用</h3><p>交换关联泛函处理交换效应和电子的关联运动。PBE 是常见的半局域泛函，SCAN 还用到动能密度等信息，HSE 混入一部分短程精确交换，通常更费计算。方法选取会改变对吸附、磁性和电子结构的预测。</p></div></div>
+    <div class="concept" style="margin-top:.75rem"><h3>泛函决定怎样近似电子相互作用</h3><p>交换关联泛函处理交换效应和电子的关联运动。PBE 是常见的半局域泛函，SCAN 还用到动能密度等信息，HSE 混入一部分短程精确交换，通常更费计算。方法选取会改变对吸附、磁性和电子结构的预测。</p><a href="#functionals">看五级泛函天梯 →</a></div></div>
     <figure class="viz"><svg viewBox="0 0 420 213" role="img" aria-labelledby="cloud-title cloud-desc"><title id="cloud-title">电子密度与氧原子受力示意</title><desc id="cloud-desc">两个圆代表原子核，外圈是定性的电子密度分布，橙色箭头代表氧原子受力。</desc><defs><radialGradient id="cloud-density"><stop stop-color="#499e88" stop-opacity=".62"/><stop offset="1" stop-color="#9fceaf" stop-opacity="0"/></radialGradient><marker id="cloud-arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path fill="#b64426" d="M0 0L7 3.5L0 7Z"/></marker></defs><rect x="4" y="4" width="412" height="205" fill="#edf2e9" rx="8"/><ellipse cx="197" cy="105" rx="140" ry="66" fill="url(#cloud-density)"/><g fill="none" stroke="#598978" opacity=".65"><ellipse cx="192" cy="105" rx="112" ry="56"/><ellipse cx="192" cy="105" rx="94" ry="44"/><ellipse cx="192" cy="105" rx="76" ry="31"/></g><circle cx="145" cy="105" r="15" fill="#246457"/><circle cx="238" cy="105" r="13" fill="#bd502d"/><path d="M256 105L322 73" stroke="#b64426" stroke-width="3" marker-end="url(#cloud-arrow)"/><g font-size="14" font-family="sans-serif" fill="#244d42"><text x="30" y="32">电子密度等值线</text><text x="112" y="183">表面原子</text><text x="223" y="183">氧原子</text><text x="305" y="58" fill="#973c23">受力方向</text></g></svg><figcaption>教学示意 · 电子云和力的方向随具体构型而变。</figcaption></figure>
   </div>
   <h3 class="subheading">怎么把晶体表面装进电脑？</h3>
@@ -103,6 +155,24 @@
   </div>
   <details class="quiz"><summary>小测 · 提高 ENCUT 能代替加密 k 点吗？</summary><p>不能。前者扩充描述电子波的平面波基组，后者加密倒空间采样。应分别检查它们对目标量的影响。</p></details>
   <p class="source-row"><a href="https://vasp.at/tutorials/latest/">VASP 官方教程</a><a href="https://vasp.at/wiki/Category:Exchange-correlation_functionals">交换关联泛函</a><a href="https://vasp.at/wiki/ENCUT">ENCUT</a></p>
+</section>
+
+<section id="functionals" class="chapter" aria-labelledby="functionals-title">
+  <p class="section-kicker">交换关联泛函</p>
+  <h2 id="functionals-title">雅各布天梯：泛函每升一级，多看了什么？</h2>
+  <p class="section-intro">DFT 用交换关联泛函补上电子交换与关联的贡献。Perdew 和 Schmidt 用五级阶梯来区分这些近似用到的信息。往上通常更费算力。吸附能、带隙和势垒各有自己的误差，选方法要看你想算准什么。</p>
+  <ol class="xc-ladder" aria-label="交换关联近似，从第一级到第五级">
+    <li><div><h3>LDA / LSDA <span>局部密度</span></h3><p>只看眼下这一点的电子密度，把周围当作密度相同的均匀电子气。LSDA 分别看自旋向上和向下的密度。可作为历史基准，有时会给出偏强的结合。</p><p class="xc-setting">VASP 示例 <code>GGA = CA</code>（PZ 参数化的 LDA）</p></div></li>
+    <li><div><h3>GGA <span>再看密度变化有多快</span></h3><p>同样的密度，出现在材料内部或表面边缘，周围的变化可能完全不同。GGA 额外使用密度梯度 ∇n。PBE 常用来做表面和催化的起步基线，PBEsol 侧重改善某些固体的平衡晶格等性质。</p><p class="xc-setting">VASP 示例 <code>GGA = PE</code>（PBE）或 <code>GGA = PS</code>（PBEsol）</p></div></li>
+    <li><div><h3>meta-GGA <span>多看轨道动能密度等信息</span></h3><p>SCAN、r²SCAN 利用轨道动能密度 τ 辨认不同成键环境。有些 meta-GGA 改用密度的拉普拉斯 ∇²n。r²SCAN 对 SCAN 做了正则化，通常更易数值收敛。</p><p class="xc-setting">VASP 示例 <code>METAGGA = R2SCAN</code>，建议 <code>LASPH = .TRUE.</code>，核对版本并测试网格。</p></div></li>
+    <li><div><h3>杂化泛函 <span>用占据轨道算一部分精确交换</span></h3><p>PBE0 把一部分 PBE 交换换成全程 Hartree–Fock 型交换。HSE06 只在短程混入这项交换。半导体带隙和局域缺陷态常值得做杂化泛函对照。金属大超胞的成本和收敛要单独评估。</p><p class="xc-setting">VASP 的 HSE06 选项 <code>GGA = PE</code>、<code>LHFCALC = .TRUE.</code>、<code>AEXX = 0.25</code>、<code>HFSCREEN = 0.2</code>（Å⁻¹）。</p></div></li>
+    <li><div><h3>RPA 等轨道相关方法 <span>常用到未占据态</span></h3><p>VASP 的 ACFDT-RPA 从电子响应来估算非局域关联。常见实现要考虑占据态到未占据态的响应，并检查响应截断、频率积分等。分子化学里也常把 B2-PLYP 等双杂化放在这一级，它用二阶微扰估算一部分关联。</p><p class="xc-setting">VASP 的 RPA 通常以已有轨道为起点，按官方多步流程做收敛测试。</p></div></li>
+  </ol>
+  <div class="two-up xc-notes">
+    <article class="panel"><h3>色散、+U 该放在哪？</h3><p>D3 等色散修正可搭配合适的基础泛函处理长程吸引。DFT+U 对选定的局域轨道加修正，常用于某些 d/f 电子。报告结果时写清楚搭配、参数与选择依据。</p></article>
+    <article class="panel"><h3>拿 Pt(111) 吸附举例</h3><p>可以先用 PBE 收敛晶胞、k 点和截断能，再挑几个位点用 r²SCAN 对照。切换方法时，洁净表面、吸附结构和 H₂ 参考能都用同一套方法重算。对照位点排序与相对能量，并说明比较的是固定几何还是各自优化后的结构。</p></article>
+  </div>
+  <p class="source-row"><a href="https://www.osti.gov/servlets/purl/960601">Perdew 等 · 雅各布天梯</a><a href="https://vasp.at/wiki/GGA">VASP · GGA</a><a href="https://vasp.at/wiki/METAGGA">VASP · meta-GGA</a><a href="https://vasp.at/wiki/List_of_hybrid_functionals">VASP · 杂化泛函</a><a href="https://vasp.at/wiki/ACFDT/RPA_calculations">VASP · RPA 工作流</a><a href="https://doi.org/10.1063/1.2148954">B2-PLYP 原论文</a></p>
 </section>
 
 <section id="workflow" class="chapter">
@@ -313,6 +383,75 @@ POSITION                         TOTAL-FORCE (eV/Angst)
   render();
 })();
 </script>
+<section id="catalysis" class="chapter" aria-labelledby="catalysis-title">
+  <p class="section-kicker">催化理论</p>
+  <h2 id="catalysis-title">Nørskov 催化理论：从吸附能到活性趋势</h2>
+  <p class="section-intro">Jens K. Nørskov 和合作者把一些常见的表面催化规律变成了可计算的量。可以先用吸附能筛候选，再用过渡态、自由能和动力学回答反应怎么走、哪一步影响速率。以下约定 <strong>*</strong> 代表空位，<strong>X*</strong> 代表吸附在表面的 X。</p>
+  <h3 class="subheading">吸附强度与 Sabatier 原理</h3>
+  <div class="lead-grid">
+    <article class="panel">
+      <p>表面抓得太松，反应物难以停留或活化。抓得太紧，中间体或产物可能占着位点不走。把吸附强度当作横轴，活性有时会在中间最高，这就是火山图的直觉。</p>
+      <div class="science-equation"><math display="block"><mrow><msub><mi>E</mi><mtext>ads</mtext></msub><mo>(</mo><mi mathvariant="normal">X</mi><mo>)</mo><mo>=</mo><mi>E</mi><mo>(</mo><mtext>X*／表面</mtext><mo>)</mo><mo>−</mo><mi>E</mi><mo>(</mo><mtext>洁净表面</mtext><mo>)</mo><mo>−</mo><msub><mi>E</mi><mtext>ref</mtext></msub><mo>(</mo><mi mathvariant="normal">X</mi><mo>)</mo></mrow></math></div>
+      <p>以气相 H₂ 为参照时，单个 H 的参考能取 ½E(H₂)。按这个定义，E<sub>ads</sub> 越负，表示相对同一参考态结合越强。做氢析出反应（HER）的热力学筛选时，常再加零点能和熵，用 ΔG<sub>H*</sub> 接近 0 eV 做粗筛。</p>
+      <a href="#practice">在 Pt(111) 案例里算一遍吸附能 →</a>
+    </article>
+    <figure class="viz catalysis-figure">
+      <svg viewBox="0 0 416 218" role="img" aria-labelledby="volcano-title volcano-desc">
+        <title id="volcano-title">Sabatier 火山图示意</title>
+        <desc id="volcano-desc">横轴是从强到弱的结合。强结合和弱结合端的模型活性都低，峰值在中间。</desc>
+        <rect x="2" y="2" width="412" height="214" rx="8" fill="#edf2e9"/>
+        <path d="M50 32V169H379" fill="none" stroke="#52736a" stroke-width="1.6"/>
+        <path d="M61 150C120 141 160 69 205 55C249 48 283 137 368 151" fill="none" stroke="#166052" stroke-width="4" stroke-linecap="round"/>
+        <path d="M213 60V168" stroke="#75978b" stroke-dasharray="4 5"/>
+        <circle cx="213" cy="54" r="6" fill="#b64426"/>
+        <g font-family="sans-serif" font-size="14" fill="#234d41">
+          <text x="50" y="23">模型活性</text><text x="223" y="46">较合适的结合</text>
+          <text x="55" y="193">结合过强</text><text x="374" y="193" text-anchor="end">结合过弱</text>
+        </g>
+      </svg>
+      <figcaption>定性示意。读真实火山图先看纵轴是实验速率、模型周转频率，还是热力学限制电位。峰位取决于反应机制与条件。</figcaption>
+    </figure>
+  </div>
+  <h3 class="subheading">三种能量趋势怎么用</h3>
+  <div class="catalysis-models">
+    <article class="panel">
+      <h3>d 带中心：用电子结构解释吸附趋势</h3>
+      <div class="science-equation"><math display="block"><mrow><msub><mi>ε</mi><mi>d</mi></msub><mo>−</mo><msub><mi>E</mi><mi>F</mi></msub><mo>=</mo><mfrac><mrow><mo>∫</mo><mo>(</mo><mi>E</mi><mo>−</mo><msub><mi>E</mi><mi>F</mi></msub><mo>)</mo><msub><mi>ρ</mi><mi>d</mi></msub><mo>(</mo><mi>E</mi><mo>)</mo><mi mathvariant="normal">d</mi><mi>E</mi></mrow><mrow><mo>∫</mo><msub><mi>ρ</mi><mi>d</mi></msub><mo>(</mo><mi>E</mi><mo>)</mo><mi mathvariant="normal">d</mi><mi>E</mi></mrow></mfrac></mrow></math></div>
+      <p>ρ<sub>d</sub>(E) 是活性位点的 d 投影态密度，E<sub>F</sub> 是费米能级。这个式子把 d 态按权重取平均。相近过渡金属和相似位点上，d 带中心抬高时，吸附产生的反键态可能较少被填充，吸附常随之增强。</p>
+      <p><strong>适用范围。</strong>用同一种投影、能窗和自旋处理来比较，并说明是否积分到未占据区。跨氧化物、单原子位点、强自旋分裂或轨道形状差别很大时，还要看具体轨道、配位和耦合。</p>
+    </article>
+    <article class="panel">
+      <h3>吸附能标度：用一种吸附能估另一种</h3>
+      <div class="science-equation"><math display="block"><mrow><msub><mi>E</mi><mtext>ads</mtext></msub><mo>(</mo><mi mathvariant="normal">Y</mi><mo>)</mo><mo>≈</mo><mi>m</mi><msub><mi>E</mi><mtext>ads</mtext></msub><mo>(</mo><mi mathvariant="normal">X</mi><mo>)</mo><mo>+</mo><mi>c</mi></mrow></math></div>
+      <p>例如在一组相似的金属表面上，O* 和 OH* 的吸附能可能一起变动。斜率 m 和截距 c 来自拟合。它能减少初筛的计算量，也提醒我们调强一种吸附时，另一种可能一起变强。</p>
+      <p><strong>适用范围。</strong>限定材料家族、参考态、位点与覆盖度，并检查拟合残差。换了成键方式或出现双位点协同，先重新验证。</p>
+    </article>
+    <article class="panel">
+      <h3>BEP：用反应能粗估同类反应的能垒</h3>
+      <div class="science-equation"><math display="block"><mrow><msub><mi>E</mi><mtext>a</mtext></msub><mo>=</mo><msub><mi>E</mi><mtext>TS</mtext></msub><mo>−</mo><msub><mi>E</mi><mtext>初态</mtext></msub><mo>≈</mo><mi>α</mi><msub><mrow><mi mathvariant="normal">Δ</mi><mi>E</mi></mrow><mtext>r</mtext></msub><mo>+</mo><mi>β</mi></mrow></math></div>
+      <p>ΔE<sub>r</sub> 取末态减初态。同一类基元反应在不同表面上，反应能和过渡态能垒可能近似线性相关。α、β 要用这组体系的过渡态数据拟合。</p>
+      <p><strong>适用范围。</strong>适合反应机理与过渡态构型相似的比较。换了位点或路径，先用 <a href="#path">NEB 或 Dimer</a> 验证代表体系。</p>
+    </article>
+  </div>
+  <h3 class="subheading">计算氢电极（CHE）：给质子和电子选一个参照</h3>
+  <article class="panel">
+    <p>在可逆氢电极（RHE）零电位，把 H⁺ 和 e⁻ 这一对的化学势用 ½G(H₂) 表示。把电位 U 按 RHE 标尺代入，消耗 n 对的还原步自由能加 neU，释放 n 对的氧化步自由能减 neU。e 是正的元电荷，单电子在 1 V 下对应 1 eV。</p>
+    <div class="science-equation"><math display="block"><mrow><mi>μ</mi><mo>(</mo><msup><mi mathvariant="normal">H</mi><mo>+</mo></msup><mo>+</mo><msup><mi>e</mi><mo>−</mo></msup><mo>)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>G</mi><mo>(</mo><msub><mi mathvariant="normal">H</mi><mn>2</mn></msub><mo>)</mo><mo>−</mo><mi>e</mi><msub><mi>U</mi><mtext>RHE</mtext></msub></mrow></math></div>
+    <div class="science-equation"><math display="block"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi><mi>G</mi></mrow><mtext>还原</mtext></msub><mo>(</mo><mi>U</mi><mo>)</mo><mo>=</mo><msub><mrow><mi mathvariant="normal">Δ</mi><mi>G</mi></mrow><mtext>还原</mtext></msub><mo>(</mo><mn>0</mn><mo>)</mo><mo>+</mo><mi>n</mi><mi>e</mi><mi>U</mi></mrow></math></div>
+    <p>如果资料用 SHE 标尺，先用 U<sub>RHE</sub> = U<sub>SHE</sub> + (k<sub>B</sub>T/e) ln(10)·pH 换算。298 K 时每单位 pH 约 0.059 V。用 RHE 写上式时，同一项 pH 修正已包含在标尺换算中。</p>
+    <p>计算零电位的 ΔG 时，可从 DFT 反应能出发，加入零点能差、热焓修正、−TΔS，以及适用的溶剂化修正。气体、水和表面中间体各自的参考态也要写清楚。</p>
+    <p><strong>例。</strong>在 298 K 标准态的四步析氧模型里，四个单电子氧化步在零电位分别上坡 1.00、1.60、1.60、0.72 eV。要让四步都不上坡，至少需要 1.60 V（相对 RHE），热力学过电位为 1.60 − 1.23 = 0.37 V。这组数值用于演算。</p>
+    <p><strong>适用范围。</strong>常用来比较电化学路径的热力学。界面电场、双电层、溶剂构型和质子转移能垒需要额外建模。关心电位改变后电子如何重新分布，可接着看 <a href="#constant-potential">恒电势计算</a>。</p>
+  </article>
+  <h3 class="subheading">想算真实活性，再往前走一步</h3>
+  <article class="panel">
+    <p>把吸附、表面反应和脱附写成可逆基元步。用自由能差约束平衡常数，用活化自由能和合适的速率表达式得到正反速率。过渡态理论常用以下形式，κ 是透射系数。</p>
+    <div class="science-equation"><math display="block"><mrow><mi>k</mi><mo>≈</mo><mi>κ</mi><mfrac><mrow><msub><mi>k</mi><mi>B</mi></msub><mi>T</mi></mrow><mi>h</mi></mfrac><mi mathvariant="normal">exp</mi><mo>(</mo><mo>−</mo><mfrac><mrow><mi mathvariant="normal">Δ</mi><msup><mi>G</mi><mo>‡</mo></msup></mrow><mrow><msub><mi>k</mi><mi>B</mi></msub><mi>T</mi></mrow></mfrac><mo>)</mo></mrow></math></div>
+    <p>对每个中间体求稳态生成与消耗的平衡，再加上位点守恒。例如所有物种都只占一个同类位点时，空位分数加上所有物种的覆盖度等于 1。这样可以估算覆盖度、每个位点每秒生成多少产物（TOF）和选择性。气体吸附还要考虑压力、碰撞和前因子。可改变某个过渡态的自由能，检查总速率对它有多敏感。</p>
+  </article>
+  <p class="source-row"><a href="https://www.sciencedirect.com/science/article/pii/S0021951714003686">Medford 等 · 从 Sabatier 到催化预测</a><a href="https://doi.org/10.1038/376238a0">Hammer 与 Nørskov · d 带模型</a><a href="https://doi.org/10.1103/PhysRevLett.99.016105">吸附能标度</a><a href="https://www.sciencedirect.com/science/article/pii/S0021951704001010">BEP 与火山图</a><a href="https://pubmed.ncbi.nlm.nih.gov/39682080/">CHE 原论文</a><a href="https://pubmed.ncbi.nlm.nih.gov/15681379/">微观动力学算例</a></p>
+</section>
+
 <section id="path" class="chapter">
   <p class="section-kicker">路径与能垒</p>
   <h2>氧原子怎么从 A 跳到 B？</h2>
@@ -3054,11 +3193,38 @@ if __name__ == "__main__":
   showCase('bulk');
 })();
 </script>
+<section id="software-comparison" class="chapter" aria-labelledby="software-comparison-title">
+  <p class="section-kicker">软件横向对比</p>
+  <h2 id="software-comparison-title">除了 VASP，还能用什么算？</h2>
+  <p class="section-intro">先看研究对象与目标量。做周期表面吸附、在水里跑分子动力学、算器件电流，虽然都可能用 DFT，所需的基组、边界条件和计算模块差别很大。</p>
+  <div class="table-shell engine-table" role="region" aria-label="电子结构软件横向对照表，可横向滚动" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">软件</th><th scope="col">怎样表示电子</th><th scope="col">常拿它做什么</th><th scope="col">授权／手册</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">VASP</th><td>平面波 + PAW</td><td>周期晶体、表面吸附、能带和 NEB。本站 Pt(111) 算例采用它。</td><td><a href="https://vasp.at/">需 VASP 授权</a></td></tr>
+        <tr><th scope="row">Quantum ESPRESSO</th><td>平面波 + UPF 势库，可用 NC、US 或 PAW</td><td><code>pw.x</code> 做周期结构与能带，<code>ph.x</code> 用 DFPT 算声子，PWneb 搜反应路径。</td><td><a href="https://www.quantum-espresso.org/documentation/">开源 · 官方文档</a></td></tr>
+        <tr><th scope="row">ABINIT</th><td>平面波 + 模守恒赝势或 PAW</td><td>DFPT 计算声子、介电和压电响应，GW/BSE 用于准粒子能量与光学激发。</td><td><a href="https://docs.abinit.org/">开源 · 官方文档</a></td></tr>
+        <tr><th scope="row">GPAW</th><td>PAW，可用实空间网格、平面波或局域轨道</td><td>与 ASE 的 Python 工作流配合紧密。可用 SJM 建立一类恒电势电化学模型。</td><td><a href="https://gpaw.readthedocs.io/algorithms.html">开源 · 官方文档</a></td></tr>
+        <tr><th scope="row">CP2K</th><td>常用 GPW：高斯基组表示轨道，平面波网格处理密度</td><td>显式水、固液界面的从头算分子动力学（AIMD），以及量子／经典混合模拟（QM/MM）。</td><td><a href="https://www.cp2k.org/features">开源 · 官方功能表</a></td></tr>
+        <tr><th scope="row">CASTEP</th><td>平面波 + 赝势</td><td>晶体结构、声子和固态 NMR。可计算部分与实验直接对照的光谱参数。</td><td><a href="https://www.castep.org/get_castep">学术许可／商业授权</a></td></tr>
+        <tr><th scope="row">QuantumATK</th><td>局域轨道或平面波，依所选计算模块而定</td><td>用 NEGF 做器件透射和电流–电压曲线。输运偏压描述两端电极的驱动，电化学电势需按相应的界面模型定义。</td><td><a href="https://www.synopsys.com/manufacturing/quantumatk/feature-list.html">商业授权 · 官方功能表</a></td></tr>
+        <tr><th scope="row">WIEN2k</th><td>全势 (L)APW+lo，全电子方法</td><td>周期固体能带、磁性与核附近性质，也可用来交叉核对赝势或 PAW 结果。</td><td><a href="https://susi.theochem.tuwien.ac.at/">需授权 · 官方主页</a></td></tr>
+        <tr><th scope="row">ORCA / Gaussian</th><td>分子计算通常用原子中心高斯基组</td><td>孤立分子或配合物的结构、频率、反应与光谱。ORCA 也常用于 DLPNO 等波函数方法。</td><td><a href="https://www.faccts.de/docs/orca/6.1/manual/contents/quickstartguide/about.html">ORCA 学术／商业许可</a><br><a href="https://gaussian.com/">Gaussian 授权</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="two-up xc-notes">
+    <article class="panel"><h3>同一个 Pt 表面，怎样跨软件对照？</h3><p>先固定几何、晶胞、泛函、自旋、色散处理和 H₂ 参考定义。各自收敛 k 点、基组、势库和展宽，再比较吸附能、位点排序或扩散势垒。分别优化时，说明几何变化也进入了误差。</p></article>
+    <article class="panel"><h3>哪些参数需要重新收敛？</h3><p>VASP 的 <code>ENCUT</code> 用 eV，QE 的 <code>ecutwfc</code> 用 Ry。即使完成单位换算，势库和表示方法也会改变所需截断。CP2K 的 GPW 还要分别看高斯基组和密度网格。吸附能的三个总能项要在同一软件、同一套相容设置里完成。</p></article>
+  </div>
+  <p class="source-row"><a href="https://docs.ase-lib.org/">ASE · 计算器接口</a><a href="https://www.quantum-espresso.org/Doc/INPUT_PW.html">Quantum ESPRESSO · pw.x 输入</a><a href="https://manual.cp2k.org/trunk/methods/dft/index.html">CP2K · DFT 手册</a><a href="#installation">进入软件安装 →</a></p>
+</section>
+
 <section id="installation" class="chapter" aria-labelledby="installation-title">
   <p class="section-kicker">软件安装与环境配置</p>
   <h2 id="installation-title">先把工具装对地方，再跑第一个算例</h2>
   <p class="section-intro">常见流程是用 ASE 建结构，用 VASP 算能量和力，再用 VASPKIT、py4vasp 或 VTST 脚本处理输出。它们的安装方式各有不同。做 CI-NEB 或恒电势时，还要确认这次作业用的是含所需补丁的那一份 VASP。</p>
-  <nav class="install-jumps" aria-label="软件安装章节目录"><a class="cta secondary" href="#install-vasp">VASP 主程序</a><a class="cta secondary" href="#install-tools">ASE 与 VASPKIT</a><a class="cta secondary" href="#install-patches">VTST 与恒电势补丁</a><a class="cta secondary" href="#install-extra">其他 Python 工具</a><a class="cta secondary" href="#install-check">检查环境</a></nav>
+  <nav class="install-jumps" aria-label="软件安装章节目录"><a href="#software-comparison">软件横向对比</a><a class="cta secondary" href="#install-vasp">VASP 主程序</a><a class="cta secondary" href="#install-tools">ASE 与 VASPKIT</a><a class="cta secondary" href="#install-patches">VTST 与恒电势补丁</a><a class="cta secondary" href="#install-extra">其他 Python 工具</a><a class="cta secondary" href="#install-check">检查环境</a></nav>
 
   <div class="install-places" aria-label="工具适合放在哪里">
     <article class="panel"><h3>Windows 本机</h3><p>装 Python 与 ASE，做结构准备、读轨迹和画图。需要 Linux 版 VASPKIT 或 Perl 脚本时，可以放到 WSL 的 Linux 环境里。</p></article>
@@ -4084,22 +4250,76 @@ python umbrella_demo.py --temperature 450 --out umbrella-450</code></pre></div>
 </script>
 <script>
 (() => {
-  const mobileMenu = document.querySelector('.mobile-nav');
-  mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { mobileMenu.open = false; }));
-  const sideLinks = [...document.querySelectorAll('.side a')];
-  const chapters = sideLinks.map(link => document.querySelector(link.hash));
+  const mast = document.querySelector('.mast');
+  const chapterMenu = document.querySelector('.chapter-menu');
+  const chapterList = document.querySelector('#chapter-list');
+  const headerList = chapterMenu.querySelector('nav');
+  headerList.replaceChildren(...Array.from(chapterList.children, link => link.cloneNode(true)));
+  const chapterLinks = Array.from(document.querySelectorAll('#chapter-list a, .chapter-menu a, .mast-nav a'));
+  const linkedIds = new Set(chapterLinks.map(link => link.hash.slice(1)));
+  const chapters = Array.from(document.querySelectorAll('.chapters > .chapter, #contact'))
+    .filter(chapter => linkedIds.has(chapter.id));
+  let mastOffset = 0;
+  let navFrame = 0;
+  let activeId;
+
   function highlightChapter() {
-    let active = -1;
-    chapters.forEach((chapter, index) => {
-      if (chapter.getBoundingClientRect().top <= 145) active = index;
-    });
-    sideLinks.forEach((link, index) => {
-      if (index === active) link.setAttribute('aria-current', 'true');
+    navFrame = 0;
+    const activationLine = mastOffset + 34;
+    let current = '';
+    for (const chapter of chapters) {
+      if (chapter.getBoundingClientRect().top > activationLine) break;
+      current = chapter.id;
+    }
+    if (Math.ceil(window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight - 2) {
+      const anchor = chapters.find(chapter => '#' + chapter.id === location.hash);
+      current = anchor && anchor.getBoundingClientRect().top >= mastOffset - 2
+        ? anchor.id
+        : chapters.at(-1)?.id ?? current;
+    }
+    if (activeId === current) return;
+    activeId = current;
+    for (const link of chapterLinks) {
+      if (link.hash === '#' + current) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
-    });
+    }
   }
-  window.addEventListener('scroll', highlightChapter, { passive: true });
-  highlightChapter();
+
+  function queueChapterHighlight() {
+    if (!navFrame) navFrame = requestAnimationFrame(highlightChapter);
+  }
+
+  function updateMastOffset() {
+    mastOffset = Math.ceil(mast.getBoundingClientRect().height) + 12;
+    document.documentElement.style.setProperty('--mast-offset', mastOffset + 'px');
+    queueChapterHighlight();
+  }
+
+  headerList.addEventListener('click', event => {
+    const link = event.target.closest('a');
+    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    chapterMenu.open = false;
+    const target = document.getElementById(link.hash.slice(1));
+    if (target) {
+      target.tabIndex = -1;
+      target.focus({ preventScroll: true });
+    }
+  });
+  chapterMenu.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' || !chapterMenu.open) return;
+    chapterMenu.open = false;
+    chapterMenu.querySelector('summary').focus();
+  });
+  document.addEventListener('click', event => {
+    if (chapterMenu.open && !chapterMenu.contains(event.target)) chapterMenu.open = false;
+  });
+  window.addEventListener('scroll', queueChapterHighlight, { passive: true });
+  window.addEventListener('hashchange', queueChapterHighlight);
+  window.addEventListener('resize', updateMastOffset);
+  chapterMenu.hidden = false;
+  document.documentElement.classList.add('chapters-ready');
+  updateMastOffset();
+  if (typeof ResizeObserver === 'function') new ResizeObserver(updateMastOffset).observe(mast);
 
   const stages = [
     ['inner', '离子步 1 · 电子步 1。先用一份初始电子密度开始计算。'],
