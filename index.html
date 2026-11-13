@@ -42,6 +42,15 @@
  .engine-table tbody tr:nth-child(even)>*{background:#f3f5ee}
  @media(max-width:740px){html:not(.chapters-ready) .side{display:block;position:static;max-height:none}.xc-ladder li:nth-child(n){--rung-offset:0}}
  @media(max-width:490px){.xc-notes{grid-template-columns:minmax(0,1fr)}}
+
+  .analysis-table table{min-width:760px}.analysis-table tbody th{background:var(--surface);width:17%}
+  .analysis-table tbody tr:nth-child(even)>*{background:#f3f5ee}
+  .analysis-steps li+li{margin-top:.6rem}
+  .people-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+  .people-grid .panel{display:flex;flex-direction:column}
+  .people-grid h3{color:var(--teal)}
+  .people-grid .source-row{margin-top:auto}
+  @media(max-width:620px){.people-grid{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body id="top">
@@ -90,9 +99,11 @@
     <a href="#overview">网站导览</a>
     <a href="#dft">DFT 基础</a>
     <a href="#functionals">泛函与雅各布天梯</a>
+    <a href="#u-dispersion">DFT+U 与色散</a>
     <a href="#workflow">VASP 工作流</a>
     <a href="#parameters">VASP 参数速查</a>
     <a href="#catalysis">Nørskov 催化理论</a>
+    <a href="#catmap">CatMAP 微观动力学</a>
     <a href="#path">过渡态与路径</a>
     <a href="#constant-potential">恒电势</a>
     <a href="#ml">机器学习势</a>
@@ -102,9 +113,12 @@
     <a href="#installation">软件安装</a>
     <a href="#linux-cli">Linux 命令行</a>
     <a href="#practice">Pt(111) 实战案例</a>
+    <a href="#electronic-structure">电子结构分析</a>
+    <a href="#post-tools">VASPKIT 与后处理</a>
     <a href="#free-energy">自由能与增强采样</a>
     <a href="#frontiers">前沿方向</a>
     <a href="#references">参考资料</a>
+    <a href="#people">计算化学人物</a>
     <a href="#contact">支持与联系</a>
   </nav>
 </aside>
@@ -120,10 +134,10 @@
   </div>
   <h3 class="subheading">第一次学，建议这样走</h3>
   <ol class="home-route">
-    <li><div><strong>先看懂计算在做什么</strong><p>读 DFT 和 VASP 工作流，重点看电子与离子双层循环。用雅各布天梯比较泛函，遇到陌生的设置再查参数手册。</p><a href="#dft">DFT 基础</a> · <a href="#functionals">泛函天梯</a> · <a href="#workflow">VASP 工作流</a> · <a href="#parameters">参数手册</a></div></li>
+    <li><div><strong>先看懂计算在做什么</strong><p>读 DFT 和 VASP 工作流，重点看电子与离子双层循环。用雅各布天梯比较泛函，遇到局域 d/f 电子或弱相互作用时再查 DFT+U 与色散。</p><a href="#dft">DFT 基础</a> · <a href="#functionals">泛函天梯</a> · <a href="#u-dispersion">DFT+U 与色散</a> · <a href="#workflow">VASP 工作流</a> · <a href="#parameters">参数手册</a></div></li>
     <li><div><strong>把环境和结构搭起来</strong><p>先熟悉 Linux 命令和输入编辑，比较能做这类计算的软件，确认集群上的程序，再用 ASE 建表面和吸附构型。</p><a href="#software-comparison">软件对比</a> · <a href="#linux-cli">Linux 命令行</a> · <a href="#installation">软件安装</a> · <a href="#ase">ASE 建模</a> · <a href="#examples">输入示例</a></div></li>
-    <li><div><strong>做完一条吸附与扩散路线</strong><p>用 Pt(111) 上的 H 练习参考能量、收敛检查、NEB 和虚频验证。结合催化理论判断吸附能和势垒各能说明什么。</p><a href="#catalysis">催化理论</a> · <a href="#practice">Pt(111) 实战</a> · <a href="#path">过渡态动画</a></div></li>
-    <li><div><strong>按研究问题继续选方法</strong><p>关心电极电势就读恒电势，关心采样成本就读机器学习势。想从静态势垒走向有限温度自由能，可以接着做增强采样练习，再看速率与量子效应。</p><a href="#constant-potential">恒电势</a> · <a href="#ml">机器学习势</a> · <a href="#free-energy">自由能与增强采样</a> · <a href="#frontiers">前沿方向</a></div></li>
+    <li><div><strong>做完一条吸附与扩散路线</strong><p>用 Pt(111) 上的 H 练习参考能量、收敛检查、NEB 和虚频验证。再用 VASPKIT 提取态密度，结合电子结构分析看吸附如何改变成键。</p><a href="#catalysis">催化理论</a> · <a href="#practice">Pt(111) 实战</a> · <a href="#path">过渡态动画</a> · <a href="#electronic-structure">电子结构分析</a> · <a href="#post-tools">VASPKIT</a></div></li>
+    <li><div><strong>按研究问题继续选方法</strong><p>关心电极电势就读恒电势，关心采样成本就读机器学习势。想从静态势垒走向有限温度自由能，可以接着做增强采样练习。想把多条基元反应合起来看总速率，就接着学 CatMAP。</p><a href="#constant-potential">恒电势</a> · <a href="#ml">机器学习势</a> · <a href="#free-energy">自由能与增强采样</a> · <a href="#catmap">CatMAP</a> · <a href="#frontiers">前沿方向</a></div></li>
   </ol>
 </section>
 <style>
@@ -169,11 +183,99 @@
     <li><div><h3>RPA 等轨道相关方法 <span>常用到未占据态</span></h3><p>VASP 的 ACFDT-RPA 从电子响应来估算非局域关联。常见实现要考虑占据态到未占据态的响应，并检查响应截断、频率积分等。分子化学里也常把 B2-PLYP 等双杂化放在这一级，它用二阶微扰估算一部分关联。</p><p class="xc-setting">VASP 的 RPA 通常以已有轨道为起点，按官方多步流程做收敛测试。</p></div></li>
   </ol>
   <div class="two-up xc-notes">
-    <article class="panel"><h3>色散、+U 该放在哪？</h3><p>D3 等色散修正可搭配合适的基础泛函处理长程吸引。DFT+U 对选定的局域轨道加修正，常用于某些 d/f 电子。报告结果时写清楚搭配、参数与选择依据。</p></article>
+    <article class="panel"><h3>色散、+U 该放在哪？</h3><p>D3 等色散修正可搭配合适的基础泛函处理长程吸引。DFT+U 对选定的局域轨道加修正，常用于某些 d/f 电子。报告结果时写清楚搭配、参数与选择依据。</p><a href="#u-dispersion">查看文献里的体系与设置 →</a></article>
     <article class="panel"><h3>拿 Pt(111) 吸附举例</h3><p>可以先用 PBE 收敛晶胞、k 点和截断能，再挑几个位点用 r²SCAN 对照。切换方法时，洁净表面、吸附结构和 H₂ 参考能都用同一套方法重算。对照位点排序与相对能量，并说明比较的是固定几何还是各自优化后的结构。</p></article>
   </div>
   <p class="source-row"><a href="https://www.osti.gov/servlets/purl/960601">Perdew 等 · 雅各布天梯</a><a href="https://vasp.at/wiki/GGA">VASP · GGA</a><a href="https://vasp.at/wiki/METAGGA">VASP · meta-GGA</a><a href="https://vasp.at/wiki/List_of_hybrid_functionals">VASP · 杂化泛函</a><a href="https://vasp.at/wiki/ACFDT/RPA_calculations">VASP · RPA 工作流</a><a href="https://doi.org/10.1063/1.2148954">B2-PLYP 原论文</a></p>
 </section>
+
+<section id="u-dispersion" class="chapter" aria-labelledby="u-dispersion-title">
+  <p class="section-kicker">计算设置与文献依据</p>
+  <h2 id="u-dispersion-title">DFT+U 与色散：不同体系怎么选？</h2>
+  <p class="section-intro">氧空位留下的电子跑遍了整块晶体？先检查局域 d／f 电子的描述。石墨层间距偏大、分子贴不住表面？看看长程色散。两种修正处理的物理问题不同，可以分别做对照。</p>
+  <h3 class="subheading" id="hubbard-choices">DFT+U：先确定要纠正哪个轨道</h3>
+  <p>一些半局域泛函会让本该集中在某个离子附近的电子分得太散。Dudarev 形式对选定子空间的分数占据加一个能量代价。下面的 <i>n</i><sup>Iσ</sup> 是第 I 个位点和自旋 σ 的轨道占据矩阵，Tr 是取迹。一个占据本征值在 0 和 1 之间时，<i>n</i>(1−<i>n</i>) 为正。</p>
+  <div class="science-equation"><math display="block"><mrow><msub><mi>E</mi><mi>U</mi></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>I</mi><mo>,</mo><mi>σ</mi></mrow></munder><mfrac><msubsup><mi>U</mi><mtext>eff</mtext><mi>I</mi></msubsup><mn>2</mn></mfrac><mi mathvariant="normal">Tr</mi><mo>[</mo><msup><mi>n</mi><mrow><mi>I</mi><mi>σ</mi></mrow></msup><mo>(</mo><mn>1</mn><mo>−</mo><msup><mi>n</mi><mrow><mi>I</mi><mi>σ</mi></mrow></msup><mo>)</mo><mo>]</mo><mo>,</mo><mspace width="1em"/><msub><mi>U</mi><mtext>eff</mtext></msub><mo>=</mo><mi>U</mi><mo>−</mo><mi>J</mi></mrow></math></div>
+  <p>文献可能把 <i>U</i><sub>eff</sub> 简写成 <i>U</i>，也可能分别给 <i>U</i> 与 <i>J</i>。先查原文用哪种形式、哪一套泛函和投影。晶相、价态、配位、磁态和势库换了，有效屏蔽和轨道占据也可能改变。</p>
+  <div class="table-shell u-dispersion-table" role="region" aria-label="文献中的 Hubbard U 实例，可横向滚动" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">元素与体系</th><th scope="col">文献中的参数（eV）</th><th scope="col">取得方式与使用建议</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Fe、Ni · 反铁磁 FeO／NiO</th><td>Fe 3d：4.3<br>Ni 3d：4.6</td><td>用 GGA 和超软赝势做线性响应，采用简化旋转不变形式。可对照绝缘性、磁矩和态密度。换成 VASP PAW 势时先验证。<br><a href="https://arxiv.org/abs/cond-mat/0405160">Cococcioni 与 de Gironcoli（2005）</a></td></tr>
+        <tr><th scope="row">V、Cr、Mn · 氧化物</th><td>V 3d：3.25<br>Cr 3d：3.70<br>Mn 3d：3.90</td><td>Materials Project 的 GGA+U 氧化能拟合，目标是相稳定性。代表校准涉及 VO₂／V₂O₅、Cr₂O₃／CrO₃、MnO／Mn₃O₄／MnO₂。<br><a href="https://github.com/materialsproject/docs/blob/master/docs/methodology/gga-plus-u.md">Materials Project 参数与校准反应</a></td></tr>
+        <tr><th scope="row">Fe、Co、Ni · 氧化物</th><td>Fe 3d：5.30<br>Co 3d：3.32<br>Ni 3d：6.20</td><td>同一套 GGA+U 数据库口径。Ni 的 6.20 来自含 LiNiO₂ 的氧化反应校准，可和上面 NiO 的 4.6 对照理解。复现数据库相图时还要使用对应的参考能与能量校正。<br><a href="https://github.com/materialsproject/docs/blob/master/docs/methodology/gga-plus-u.md">Materials Project 参数</a> · <a href="https://doi.org/10.1103/PhysRevB.73.195107">氧化能拟合思路</a></td></tr>
+        <tr><th scope="row">Mo、W · 氧化物</th><td>Mo 4d：4.38<br>W 5d：6.20</td><td>Materials Project 以 MoO₂／MoO₃、WO₂／WO₃ 做氧化反应校准。做 MoS₂ 层间结合、金属 Mo 或表面反应时，应从各自的成键和目标性质出发。<br><a href="https://github.com/materialsproject/docs/blob/master/docs/methodology/gga-plus-u.md">Materials Project 参数与适用范围</a></td></tr>
+        <tr><th scope="row">Ti · 金红石 TiO₂(110) 氧空位</th><td>Ti 3d：原文扫描中约 4.2 起出现明显变化</td><td>GGA+U 下，原文发现从 ≤4.0 到 ≥4.2 时，缺陷电子的优先局域位置发生变化。比较邻近和次表层的 Ti 位点，并检查自旋密度和缺陷态。该阈值对应原文板层与投影。<br><a href="https://doi.org/10.1016/j.susc.2007.08.025">Morgan 与 Watson（2007）</a></td></tr>
+        <tr><th scope="row">Ce · 还原 CeO₂ 与应变</th><td>Ce 4f：4.5</td><td>VASP PAW、PBE+Dudarev，沿用线性响应值研究氧空位与应变。检查空位附近与较远 Ce 上的局域解；Ce 的 PAW 数据集应包含待修正的价层 4f。<br><a href="https://www.nature.com/articles/ncomms15360">Gopal 等（2017）</a> · <a href="https://doi.org/10.1039/C4CP01083C">局域解与占据矩阵算例</a></td></tr>
+        <tr><th scope="row">Fe、Mn · 橄榄石磷酸盐</th><td>Fe：LiFePO₄ 3.71／FePO₄ 4.90<br>Mn：LiMnPO₄ 3.92／MnPO₄ 5.09</td><td>同一研究用 VASP PAW、GGA 和线性响应分别求两端相的有效 U。复现插锂电压时，照原文的能量比较约定执行。<br><a href="https://arxiv.org/abs/cond-mat/0406382">Zhou 等（2004），表 II</a></td></tr>
+        <tr><th scope="row">Ru、Ir · 金红石氧化物表面</th><td>RuO₂：6.73<br>IrO₂：5.91</td><td>数值来自 Quantum ESPRESSO、PBE 和 GBRV 超软赝势的<strong>体相</strong>线性响应。原文另外扫描 (110) 表面的吸附能。做 VASP 表面时，可从无 U 对照开始，按本体系校验磁性、态密度与反应能，再决定有无加 U 的依据。<br><a href="https://kitchingroup.cheme.cmu.edu/papers/xu2015/">Xu 等（2015），作者组方法说明</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="two-up xc-notes">
+    <article class="panel">
+      <h4>VASP 写法 · Fe／O 顺序，Fe 3d 加 U</h4>
+      <div class="step-file"><pre><code>GGA      = PE
+ISPIN    = 2
+LDAU     = .TRUE.
+LDAUTYPE = 2
+LDAUL    = 2  -1
+LDAUU    = 5.30  0.0
+LDAUJ    = 0.00  0.0
+LMAXMIX  = 4
+LASPH    = .TRUE.</code></pre></div>
+      <p>这里用数据库 Fe 值演示语法。三行数组顺序要跟 POSCAR 和 POTCAR 的元素块一致。<code>2</code> 选 d、<code>3</code> 选 f、<code>-1</code> 跳过该元素。磁性体系按原子顺序用 <code>MAGMOM</code> 分别初始化合理的铁磁和反铁磁等排布。后续读固定电荷密度画能带时，先在自洽阶段写好 CHGCAR，d／f 对应 <code>LMAXMIX = 4</code>／<code>6</code>。</p>
+    </article>
+    <article class="panel">
+      <h4>怎样得到更适合自己体系的 U？</h4>
+      <p>在线性响应里，对某个原子的 d 或 f 子空间施加一小段局域势，再看占据变化。分别求未屏蔽响应 χ₀ 与自洽屏蔽响应 χ。比较不同扰动强度及超胞大小，确认处在线性区，且扰动的周期镜像影响够小。</p>
+      <div class="science-equation"><math display="block"><mrow><msub><mi>U</mi><mi>I</mi></msub><mo>=</mo><msub><mrow><mo>(</mo><msubsup><mi>χ</mi><mn>0</mn><mrow><mo>−</mo><mn>1</mn></mrow></msubsup><mo>−</mo><msup><mi>χ</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>)</mo></mrow><mrow><mi>I</mi><mi>I</mi></mrow></msub></mrow></math></div>
+      <p>VASP 的 <code>LDAUTYPE = 3</code> 用于这类响应计算，此时 <code>LDAUU/LDAUJ</code> 填自旋通道的扰动势。得到有效 U 后，再按选定形式做正式计算。实验拟合也可用，最好用独立的带隙、磁矩、氧化能或目标性质检验。</p>
+      <p class="source-row"><a href="https://vasp.at/wiki/Calculate_U_for_LSDA%2BU">VASP · NiO 线性响应算例</a><a href="https://vasp.at/wiki/LDAUTYPE">LDAUTYPE</a><a href="https://vasp.at/wiki/LMAXMIX">LMAXMIX</a></p>
+    </article>
+  </div>
+  <p class="callout"><strong>比较吸附能或 NEB 势垒。</strong>一组直接相减的能量采用一致的泛函、PAW、+U 形式和参数。做 U 敏感性测试时，每个 U 下重算相应的所有能量项。检查同一 U 下不同磁态与局域初态，尤其注意 NEB 图像之间是否发生了非预期的电子态跳变。跨 GGA 和 GGA+U 比较相图时，应使用有依据的统一参考或校正规则。</p>
+  <h3 class="subheading" id="dispersion-choices">色散：看看有没有主要靠远程吸引贴在一起的部分</h3>
+  <p>电子云的涨落会让两个物体互相吸引。远距离下，两个小而中性的片段之间常见 −<i>C</i><sub>6</sub>/<i>R</i><sup>6</sup> 的行为。到了多层材料或金属表面，很多原子会一起响应，成对相加只是近似。选方法时同时考虑基底、吸附物和观测量。</p>
+  <div class="table-shell u-dispersion-table" role="region" aria-label="不同体系的色散设置建议，可横向滚动" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">体系与目标</th><th scope="col">可比较的做法</th><th scope="col">用什么判断</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">分子对、有机晶体</th><td>从 PBE-D3(BJ) 开始，关键晶型或强极化体系再与多体方法或高阶基准对照。</td><td>看分子间距离、晶胞体积、晶格能和晶型相对能。与升华实验比较时，核对零点能和热修正。<br><a href="https://doi.org/10.1039/C9CP04488D">X23 分子晶体基准</a></td></tr>
+        <tr><th scope="row">石墨、h-BN、层状 MoS₂</th><td>可对照 optB86b-vdW、r²SCAN+rVV10 和 PBE-D3(BJ)。单层也要检查真空是否拉开周期镜像。</td><td>分别核对层间距、层间结合能、面内晶格和堆垛顺序。r²SCAN+rVV10 的基准论文也指出，石墨和 MoS₂ 双层结合可能偏强。<br><a href="https://doi.org/10.1103/PhysRevB.106.075422">Ning 等 · r²SCAN+rVV10</a> · <a href="https://doi.org/10.1002/adts.202200055">层状材料色散基准</a></td></tr>
+        <tr><th scope="row">苯、PTCDA 等吸附在金属</th><td>先对照基础泛函和一种有色散的组合。大分子在 Au、Ag、Cu 上还应考虑基底屏蔽，可与 vdW<sup>surf</sup> 或有适用基准的多体方案比较。</td><td>同时看吸附高度、构型与吸附能。普通成对修正在部分金属界面可能过度结合。<br><a href="https://doi.org/10.1103/PhysRevB.93.035118">Ruiz 等 · 金属基底屏蔽</a> · <a href="https://arxiv.org/abs/1506.03480">金属表面的多体色散</a></td></tr>
+        <tr><th scope="row">离子晶体、致密氧化物体相</th><td>先用无色散基线检查结构和能量。若目标涉及界面、分子吸附或弱结合层，单独验证色散修正。对离子极化强的体系，可比较考虑部分离子电荷的 MBD@rSC/FI（<code>IVDW = 263</code>）。</td><td>用晶格常数、相对能和目标吸附能判断。加色散对体积和形成焓的改善幅度可能不同。<br><a href="https://arxiv.org/abs/2208.02841">固体热力学基准</a> · <a href="https://doi.org/10.1021/acs.jctc.6b00925">离子极化与多体色散</a></td></tr>
+        <tr><th scope="row">Pt(111) 上 H 的化学吸附与扩散</th><td>复用本手册的 PBE 基线。若需要评估色散影响，选一种相容修正，在同一 slab、覆盖度与 k 点设置下对照。</td><td>对比吸附位点排序、吸附能与势垒。若修正导致明显几何变化，应重新优化端点并重新检查路径。<br><a href="#practice">Pt(111) 实战案例</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4 class="subheading">三种常见组合的 INCAR 片段 · 每次选一列</h4>
+  <div class="three-up">
+    <article class="panel"><h4>PBE-D3(BJ)</h4><p>用原子对和阻尼函数加色散能。<code>IVDW = 11</code> 则是 D3 零阻尼。换泛函时核对阻尼参数。</p><div class="step-file"><pre><code>GGA  = PE
+IVDW = 12</code></pre></div></article>
+    <article class="panel"><h4>optB86b-vdW</h4><p>用优化过的交换部分配上 Dion 型非局域关联核。</p><div class="step-file"><pre><code>GGA      = MK
+PARAM1   = 0.1234
+PARAM2   = 1.0
+AGGAC    = 0.0
+LUSE_VDW = .TRUE.
+LASPH    = .TRUE.</code></pre></div></article>
+    <article class="panel"><h4>r²SCAN+rVV10</h4><p>给 meta-GGA 加非局域关联。此组合用 <code>BPARAM = 11.95</code>，SCAN+rVV10 则用 15.7。</p><div class="step-file"><pre><code>METAGGA  = R2SCAN
+LUSE_VDW = .TRUE.
+BPARAM   = 11.95
+CPARAM   = 0.0093
+LASPH    = .TRUE.</code></pre></div></article>
+  </div>
+  <p class="note">切换输入时清掉上一组合的专属标签，避免把原子对色散和非局域色散叠加。VASP 6.4 起可显式指定 <code>IVDW_NL</code>，Dion 核用 1，rVV10 核用 2。旧版 VASP 的 Dion 核文件和 rVV10 应力支持有差异，晶胞优化前查相应版本的手册。使用 <code>IVDW</code> 的色散修正时，VASP 的 DFPT 声子不含此项，需按手册考虑有限位移法。</p>
+  <p class="source-row"><a href="https://vasp.at/wiki/IVDW">VASP · IVDW</a><a href="https://vasp.at/wiki/Nonlocal_van_der_Waals_density_functionals">VASP · 非局域 vdW 配方</a><a href="https://doi.org/10.1002/jcc.21759">D3 阻尼原文</a><a href="https://doi.org/10.1103/PhysRevB.83.195131">optB86b-vdW 原文</a></p>
+</section>
+<style>
+  #u-dispersion .u-dispersion-table table { min-width: 42rem; }
+  #u-dispersion .u-dispersion-table tbody th { min-width: 11rem; font-weight: 650; }
+  #u-dispersion .u-dispersion-table :is(th,td):nth-child(2) { min-width: 9.5rem; }
+  #u-dispersion h4 { margin-bottom: .6rem; }
+  #u-dispersion .step-file { margin: .65rem 0; }
+  #u-dispersion .note { margin-top: 1rem; }
+</style>
 
 <section id="workflow" class="chapter">
   <p class="section-kicker">VASP 工作流</p><h2>从四个输入文件到一组可以比较的结果</h2><p class="section-intro">先建好表面和两个吸附构型，分别优化。然后用可比的设置算 A 和 B 的能量差。若还要问“氧怎么过去”，再把两个端点交给路径算法。</p>
@@ -449,7 +551,67 @@ POSITION                         TOTAL-FORCE (eV/Angst)
     <div class="science-equation"><math display="block"><mrow><mi>k</mi><mo>≈</mo><mi>κ</mi><mfrac><mrow><msub><mi>k</mi><mi>B</mi></msub><mi>T</mi></mrow><mi>h</mi></mfrac><mi mathvariant="normal">exp</mi><mo>(</mo><mo>−</mo><mfrac><mrow><mi mathvariant="normal">Δ</mi><msup><mi>G</mi><mo>‡</mo></msup></mrow><mrow><msub><mi>k</mi><mi>B</mi></msub><mi>T</mi></mrow></mfrac><mo>)</mo></mrow></math></div>
     <p>对每个中间体求稳态生成与消耗的平衡，再加上位点守恒。例如所有物种都只占一个同类位点时，空位分数加上所有物种的覆盖度等于 1。这样可以估算覆盖度、每个位点每秒生成多少产物（TOF）和选择性。气体吸附还要考虑压力、碰撞和前因子。可改变某个过渡态的自由能，检查总速率对它有多敏感。</p>
   </article>
-  <p class="source-row"><a href="https://www.sciencedirect.com/science/article/pii/S0021951714003686">Medford 等 · 从 Sabatier 到催化预测</a><a href="https://doi.org/10.1038/376238a0">Hammer 与 Nørskov · d 带模型</a><a href="https://doi.org/10.1103/PhysRevLett.99.016105">吸附能标度</a><a href="https://www.sciencedirect.com/science/article/pii/S0021951704001010">BEP 与火山图</a><a href="https://pubmed.ncbi.nlm.nih.gov/39682080/">CHE 原论文</a><a href="https://pubmed.ncbi.nlm.nih.gov/15681379/">微观动力学算例</a></p>
+  <p class="source-row"><a href="https://www.sciencedirect.com/science/article/pii/S0021951714003686">Medford 等 · 从 Sabatier 到催化预测</a><a href="https://doi.org/10.1038/376238a0">Hammer 与 Nørskov · d 带模型</a><a href="https://doi.org/10.1103/PhysRevLett.99.016105">吸附能标度</a><a href="https://www.sciencedirect.com/science/article/pii/S0021951704001010">BEP 与火山图</a><a href="https://pubmed.ncbi.nlm.nih.gov/39682080/">CHE 原论文</a><a href="https://pubmed.ncbi.nlm.nih.gov/15681379/">微观动力学算例</a><a href="#catmap">继续学 CatMAP →</a></p>
+</section>
+
+<section id="catmap" class="chapter" aria-labelledby="catmap-title">
+  <p class="section-kicker">催化反应网络</p>
+  <h2 id="catmap-title">CatMAP：把每一步的能量连成整体反应速率</h2>
+  <p class="section-intro">用 DFT 算出 CO 抓得很牢之后，怎么判断催化剂会更快还是会被 CO 堵住？CatMAP 是一套 Python 微观动力学工具。把反应步骤、各物种的能量和工况给它，它会求表面位点怎样分配、各步的净速率是多少。扫过一组吸附能，就能看到活性和覆盖度怎样随材料变化。</p>
+  <div class="three-up">
+    <article class="panel"><h3>先把机制写全</h3><p>把吸附、扩散、成键、断键和脱附拆成基元步骤。每一步检查元素与位点守恒。CO 氧化里的 O₂ 解离要用两个空位，所以在单类位点、随机混合近似下，正向速率会乘上空位分数的平方。</p></article>
+    <article class="panel"><h3>把电子能变成自由能</h3><p>中间体和过渡态的电子能要用一致的洁净表面和气相参考做差，能量表用 eV。由所选热化学模型加上零点能、焓和熵，再用气体分压构造活度。开启内置修正时，别在能量表里重复加同一项。</p></article>
+    <article class="panel"><h3>选择能解释趋势的描述符</h3><p>CO 氧化常用 O* 和 CO* 的结合相关能量做两根坐标轴。把其他中间体或过渡态能量对这两项做<a href="#catalysis">标度拟合</a>，再逐点解速率。先看拟合残差，换晶面、位点类型或机理时重新核对。没有足够的材料数据时，可以先做单个催化剂的微观动力学。</p></article>
+  </div>
+  <h3 class="subheading">程序到底在求什么？</h3>
+  <div class="two-up">
+    <article class="panel">
+      <h3>一条反应有正向和反向</h3>
+      <p>以 CO(g) + * ⇌ CO* 为例，<em>a</em><sub>CO</sub> = <em>p</em><sub>CO</sub>/<em>p</em>° 是理想气体活度，<em>θ</em><sub>*</sub> 和 <em>θ</em><sub>CO</sub> 分别是空位和 CO 的覆盖分数。净速率由两边的通量相减。</p>
+      <div class="science-equation"><math display="block" aria-label="净速率等于正向速率常数乘 CO 活度和空位分数，减反向速率常数乘 CO 覆盖度"><mrow><mi>r</mi><mo>=</mo><msub><mi>k</mi><mi>f</mi></msub><msub><mi>a</mi><mtext>CO</mtext></msub><msub><mi>θ</mi><mo>*</mo></msub><mo>−</mo><msub><mi>k</mi><mi>r</mi></msub><msub><mi>θ</mi><mtext>CO</mtext></msub></mrow></math></div>
+      <p>正、反势垒从同一过渡态分别减去初态和末态的自由能。按一致的无量纲活度和标准态写速率，<em>k</em><sub>f</sub>/<em>k</em><sub>r</sub> = exp[−Δ<em>G</em>°/(<em>k</em><sub>B</sub><em>T</em>)]，平衡时每一步的正反通量相等。气体吸附的前因子可另用碰撞通量模型，反向也要与平衡常数相容。</p>
+    </article>
+    <article class="panel">
+      <h3>所有位点一起算</h3>
+      <p>只有一种位点、每个吸附物占一格时，空位和已占位加起来为 1。稳态指每种表面中间体的生成通量和消耗通量相抵，气体产物仍可不断流出。</p>
+      <div class="science-equation"><math display="block" aria-label="空位覆盖度加所有吸附物覆盖度等于一，稳态时各物种覆盖度对时间的导数等于零"><mrow><msub><mi>θ</mi><mo>*</mo></msub><mo>+</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>θ</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn><mspace width="1.2em"/><mfrac><mrow><mi mathvariant="normal">d</mi><msub><mi>θ</mi><mi>i</mi></msub></mrow><mrow><mi mathvariant="normal">d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>ν</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>r</mi><mi>j</mi></msub><mo>=</mo><mn>0</mn></mrow></math></div>
+      <p><em>ν</em><sub>ij</sub> 表示第 <em>j</em> 步生成或消耗几个 <em>i</em>。多类位点要分别记账，多齿吸附按实际占位数加权。若近邻排布或团簇决定速率，可用考虑空间关联的模型检验平均场近似。</p>
+    </article>
+  </div>
+  <details class="quiz">
+    <summary>手算一个稳态：表面占了一半，产物还在生成吗？</summary>
+    <p>设 A(g) + * ⇌ A* ⇌ P(g) + *。将两边固定分压吸收进速率系数，A 的吸附、脱附系数为 2 和 1 s⁻¹，A* 生成 P、P 回吸的系数为 3 和 2 s⁻¹。设 A* 的覆盖度为 θ。稳态满足 2(1−θ)−θ = 3θ−2(1−θ)，得 θ = 0.50。P 的净生成速率是 3×0.50−2×0.50 = 0.50 个产物／位点／秒。这里的四个系数用于演算。</p>
+  </details>
+  <h3 class="subheading">照官方 CO 氧化算例跑一次</h3>
+  <p>先取 <a href="https://github.com/SUNCAT-Center/catmap/tree/master/tutorials/2-creating_microkinetic_model">CatMAP 官方教程的三个文件</a>，把 <code>CO_oxidation.mkm</code>、<code>energies.txt</code> 和 <code>mkm_job.py</code> 放同一个目录。在按官方仓库说明装好 CatMAP 的 Python 环境中，从该目录运行 <code>python mkm_job.py</code>。保留官方反应式、标度约束和对应能量表，初学时先改下面几个量。设置按官方示例核对，本页未重新运行 CatMAP 求解。</p>
+  <div class="two-up">
+    <div class="step-file">
+      <header><strong>CO_oxidation.mkm</strong><span class="mono">替换这些设置</span></header>
+      <pre><code>temperature = 550  # K
+resolution = 9     # 两个描述符各取 9 个点
+species_definitions = {
+    'CO_g': {'pressure': 0.60},
+    'O2_g': {'pressure': 0.30},
+    'CO2_g': {'pressure': 0.01},
+    's': {'site_names': ['111'], 'total': 1.0},
+}
+data_file = 'co_550K.pkl'  # 为新工况单独保存</code></pre>
+    </div>
+    <article class="panel"><h3>输入、设置和求解各管什么</h3><p><code>energies.txt</code> 用制表符分列，保存气相、吸附态和过渡态的参考能。频率默认用 cm⁻¹。<code>.mkm</code> 指定反应网络、位点、描述符、温度和分压（bar）。<code>mkm_job.py</code> 创建 <code>ReactionModel</code>，调用 <code>model.run()</code>，再画覆盖度和速率图。</p><p>原例用 <code>shomate_gas</code> 处理气相热化学，用 <code>frozen_adsorbate</code> 忽略吸附态的热修正。有可靠振动数据时，可评估 <code>harmonic_adsorbate</code> 带来的变化。<code>rxn_expressions</code> 中的 <code>_g</code> 表示气相，<code>_s</code> 表示这里的表面位点类型。带中间过渡态的表达式仍是一条基元步骤。</p></article>
+  </div>
+  <h3 class="subheading">拿到图，先检查这三件事</h3>
+  <div class="table-shell" role="region" aria-label="CatMAP 输出解读表" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">输出</th><th scope="col">能回答什么</th><th scope="col">怎么复核</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><code>coverage_map</code></th><td>哪种中间体占满了位点？还有多少空位？</td><td>核对位点余额、覆盖度范围和求解残差。看不收敛点是否集中在火山峰附近。</td></tr>
+        <tr><th scope="row"><code>rate_map</code> / <code>production_rate_map</code></th><td>各基元步净速率和产物生成速率。按目标产物的计量和位点数归一可得到 TOF。</td><td>核对元素守恒和产物通量。用相同的计量基准比较并行产物的选择性，例如碳原子通量占比。</td></tr>
+        <tr><th scope="row"><code>rate_control</code></th><td>哪个中间体或过渡态的自由能变化最影响目标产物速率？</td><td>比较不同温度、分压和表面，确认结论是否经得住能量误差。也可对照实验反应级数与表观活化能。</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="callout">如果 500 K 时某条势垒差了 0.10 eV，只看过渡态理论的指数因子就会差约 10 倍。整网的变化还取决于覆盖度与其他步骤。优先核实对速率敏感的能量、参考态和替代机理。</p>
+  <p class="source-row"><a href="https://doi.org/10.1007/s10562-015-1495-6">Medford 等 · CatMAP 原论文</a><a href="https://catmap.readthedocs.io/en/latest/tutorials/creating_a_microkinetic_model.html">官方 CO 氧化教程</a><a href="https://catmap.readthedocs.io/en/latest/tutorials/generating_an_input_file.html">官方能量表与参考态说明</a><a href="https://catmap.readthedocs.io/en/latest/tutorials/refining_a_microkinetic_model.html">官方灵敏度与图形分析</a><a href="https://github.com/SUNCAT-Center/catmap#installation">安装说明</a></p>
 </section>
 
 <section id="path" class="chapter">
@@ -3388,7 +3550,8 @@ grep 'TITEL' POTCAR</code></pre>
       <p class="note">提示 <code>GLIBC_… not found</code> 时，检查当前系统能否运行该发行包，选兼容构建或切换到受支持的 Linux 环境。提示 <code>command not found</code> 时，先核对 <code>PATH</code> 和 <code>bin/vaspkit</code> 的实际位置。</p>
     </details>
     <p class="source-row"><a href="https://vaspkit.com/installation.html">VASPKIT 安装、配置与用法条款</a><a href="https://vaspkit.com/tutorials.html">官方输入文件教程</a><a href="https://vasp.at/wiki/Preparing_a_POTCAR">VASP 的 POTCAR 说明</a></p>
-  </article>
+      <p class="source-row"><a href="#post-tools">装好后，跟着做一次 Pt(111) 后处理 →</a></p>
+    </article>
 </section>
 <style>
   #install-tools > .panel{margin-top:1rem}
@@ -3960,6 +4123,114 @@ python prepare_ts.py verify</code></pre></div>
 })();
 </script>
 
+<section id="electronic-structure" class="chapter" aria-labelledby="electronic-structure-title">
+  <p class="section-kicker">电子结构分析</p>
+  <h2 id="electronic-structure-title">算完吸附能，怎样看电子发生了什么？</h2>
+  <p class="section-intro">能量告诉你哪个构型更稳。电子结构分析帮你追问：哪些原子和轨道参与了成键？电子云往哪里挪？表面变得更容易失去电子了吗？按问题挑图，比把所有结果画一遍更有用。</p>
+  <div class="table-shell analysis-table" role="region" aria-label="电子结构分析方法对照表，可横向滚动" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">你想知道什么</th><th scope="col">用什么方法</th><th scope="col">从哪里取数据</th><th scope="col">怎么解读</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">材料是金属还是有带隙？</th><td>能带与总态密度（DOS）</td><td>能带从 <code>EIGENVAL</code>、<code>vasprun.xml</code> 等读取。DOS 常从 <code>DOSCAR</code> 读取。</td><td>能带保留电子态随 k 点的变化，能看带边位置与色散。DOS 汇总各能量附近有多少态。半局域 DFT 的 Kohn–Sham 带隙常偏小。</td></tr>
+        <tr><th scope="row">哪种轨道参与成键或磁性？</th><td>投影态密度（PDOS）、投影能带与自旋密度</td><td><code>LORBIT = 11</code> 常用来输出分波投影，读 <code>DOSCAR</code>、<code>PROCAR</code>。共线自旋极化时，<code>CHGCAR</code> 还可含磁化密度。</td><td>看吸附物与位点轨道的峰形、展宽和自旋差异。两个峰在相同能区只说明值得进一步检查。投影的数值依赖投影方式。</td></tr>
+        <tr><th scope="row">电子云在哪里堆积或减少？</th><td>差分电荷密度 Δρ</td><td>用吸附体系、冻结几何的裸表面与冻结几何的吸附物三份 <code>CHGCAR</code>。</td><td>正值是电子积累，负值是电子减少。三份计算使用同一晶胞、原子位置约定和 FFT 网格，绘图时标注正负色、单位和等值面阈值。</td></tr>
+        <tr><th scope="row">按同一种划分，原子分到多少电子？</th><td>Bader 电荷分析</td><td><code>LCHARG = .TRUE.</code> 生成 <code>CHGCAR</code>，<code>LAECHG = .TRUE.</code> 输出 <code>AECCAR0</code> 和 <code>AECCAR2</code> 等文件。用芯层与自洽价电子密度之和确定划分区域。</td><td>比较同一网格精度和同一方法下的电子数变化。积分得到的是空间划分下的电子数，正式氧化态仍要结合配位、磁矩和化学计量判断。</td></tr>
+        <tr><th scope="row">电子在哪里更局域？</th><td>电子局域函数（ELF）</td><td><code>LELF = .TRUE.</code> 输出 <code>ELFCAR</code>。</td><td>结合晶体结构和电子密度看成键区、孤对或壳层。ELF 是无量纲的局域程度，高 ELF 也可能出现在电子密度很低的地方。</td></tr>
+        <tr><th scope="row">指定的一对原子在哪些能量上成键？</th><td>COHP / ICOHP</td><td>如用 LOBSTER 把平面波波函数投影到局域轨道，需准备相应的 <code>WAVECAR</code> 和输入，按版本核对基组与能带数。</td><td>通常原始 COHP 的负值表示成键，画 −COHP 时正值表示成键。ICOHP 是能量积分，比较时注明积分上限、原子对和投影质量。可与键长、PDOS 互证。</td></tr>
+        <tr><th scope="row">表面把电子放到真空有多难？</th><td>功函数 Φ</td><td>从 <code>LOCPOT</code> 做沿表面法向的平面平均，取真空平台。费米能级从均匀 k 网格的计算结果取。</td><td>Φ 是真空电子能量减费米能级。非对称板层的两侧可不同，应检查偶极修正及真空平台。比较绝缘体时也要说明所取的化学势。</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="two-up xc-notes">
+    <article class="panel">
+      <h3>差分图：把三张电子云叠在一起减</h3>
+      <div class="science-equation"><math display="block"><mrow><mi mathvariant="normal">Δ</mi><mi>ρ</mi><mo>(</mo><mi mathvariant="bold">r</mi><mo>)</mo><mo>=</mo><msub><mi>ρ</mi><mtext>表面+吸附物</mtext></msub><mo>−</mo><msub><mi>ρ</mi><mtext>表面</mtext></msub><mo>−</mo><msub><mi>ρ</mi><mtext>吸附物</mtext></msub></mrow></math></div>
+      <p>把吸附后弛豫的结构复制两份，一份删掉 H，一份只保留原位 H。各自做静态计算，保持相同晶胞、泛函、势库和电荷密度网格。中性且总电子数相加一致时，整盒的 Δρ 积分应接近 0。孤立 H 的自旋与参照也要交代。这张图用原位 H 作电子密度参照，吸附能仍可用 ½E(H₂) 作能量参照。</p>
+    </article>
+    <article class="panel">
+      <h3>Bader：先按密度分地盘，再数电子</h3>
+      <div class="science-equation"><math display="block"><mrow><msub><mi>q</mi><mi>i</mi></msub><mo>=</mo><msub><mi>Z</mi><mrow><mi>i</mi><mo>,</mo><mtext>val</mtext></mrow></msub><mo>−</mo><msubsup><mo>∫</mo><msub><mi>Ω</mi><mi>i</mi></msub><mspace width="0em"/></msubsup><msub><mi>ρ</mi><mtext>val</mtext></msub><mo>(</mo><mi mathvariant="bold">r</mi><mo>)</mo><msup><mi mathvariant="normal">d</mi><mn>3</mn></msup><mi>r</mi></mrow></math></div>
+      <p>沿密度变化的方向找边界，让边界上垂直方向的密度梯度为零。这里 Ω<sub>i</sub> 是原子 i 的区域，Z<sub>i,val</sub> 取 POTCAR 的价电子数。用 <code>CHGCAR</code> 积分价电子时，q<sub>i</sub> 为正表示分到的电子少于该参考值。把网格加密后再比较小数值差异。</p>
+    </article>
+  </div>
+  <h3 class="subheading">用 Pt(111) 上的 H 走一遍</h3>
+  <ol class="analysis-steps">
+    <li><strong>先把几何和能量算稳。</strong> 从 <a href="#practice">Pt(111) 实战</a>取已优化的 fcc、hcp 构型。用一致的设置比较吸附能，再选目标构型做静态电子结构计算。</li>
+    <li><strong>看能量轴。</strong> 用收敛的均匀 k 网格算 DOS，比较 H 1s、邻近 Pt 的 d 轨道和洁净表面的 PDOS，必要时检查展宽。若画能带，用单独的高对称 k 路径。以各自 E<sub>F</sub> 置零方便看相对占据，比较真空对齐的能级位移时使用同一物理参考。</li>
+    <li><strong>看空间分布。</strong> 用同一阈值画 Δρ，再用 Bader 估算 H 周围的电子数变化。若要比较吸附后功函数，可取 ΔΦ = Φ<sub>吸附后</sub> − Φ<sub>洁净</sub>，并选同一侧的真空平台。想进一步核对 Pt–H 成键，可查指定原子对的 pCOHP。</li>
+    <li><strong>把结论写到证据能支持的程度。</strong> 例如“该位点有 H 1s–Pt d 杂化迹象，界面附近出现电荷重排”。解释 fcc 与 hcp 的能量差时，两种位点都要分析，再检查数值误差、覆盖度和几何变化。</li>
+  </ol>
+  <p class="source-row"><a href="#post-tools">用 VASPKIT 与其他工具处理结果 →</a><a href="#catalysis">d 带中心与催化趋势</a><a href="https://vasp.at/wiki/Electronic_ground-state_properties">VASP · 电子结构输出</a><a href="https://vasp.at/wiki/Computing_the_Workfunction">VASP · 功函数</a><a href="https://vasp.at/wiki/LAECHG">VASP · LAECHG</a><a href="https://theory.cm.utexas.edu/henkelman/pubs/henkelman06_354.pdf">Bader 网格算法论文</a><a href="https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=4">COHP 与 LOBSTER 方法论文</a></p>
+</section>
+
+<section id="post-tools" class="chapter" aria-labelledby="post-tools-title">
+  <p class="section-kicker">VASPKIT 与后处理工具</p>
+  <h2 id="post-tools-title">VASP 跑完了，怎样把结果变成图和表？</h2>
+  <p class="section-intro">VASPKIT 可以在开算前生成输入，在算完后把大文件整理成能画图的表格。你需要先用 VASP 算出所需数据，再让 VASPKIT 提取。下面以官方 1.5 文档的任务号为例，实际操作以本机菜单为准。</p>
+  <p class="source-row"><a href="#install-vaspkit">安装与配置</a><a href="#practice">Pt(111) 实战案例</a><a href="#electronic-structure">电子结构图怎么读</a></p>
+
+  <h3 class="subheading">先学会两种运行方式</h3>
+  <div class="two-up">
+    <article class="panel">
+      <h3>第一次用，看菜单</h3>
+      <p>在有 <code>POSCAR</code> 的测试目录输入 <code>vaspkit</code>。找到输入文件菜单，输入 <code>102</code>，选 <code>2</code>（Γ 中心网格），再输入 <code>0.04</code> 试生成 <code>KPOINTS</code>。这里的倒空间分辨率约为 2π × 0.04 Å⁻¹。做表面模型时检查真空方向通常是否只取一个 k 点，面内网格另做收敛测试。</p>
+    </article>
+    <article class="panel">
+      <h3>菜单试通后，再写进脚本</h3>
+      <p>以下是两种独立的写法，任选一种。标准输入会按顺序回答菜单问题，命令行标志可先用 <code>vaspkit -help</code> 查看。生成前备份目录里的旧 <code>KPOINTS</code>。</p>
+      <div class="step-file"><header><strong>Linux · 生成 KPOINTS</strong></header><pre tabindex="0"><code>printf '%s\n' 102 2 0.04 | vaspkit
+# 也可用以下方式，完成后检查网格中心和密度
+vaspkit -task 102 -kpr 0.04
+cat KPOINTS</code></pre></div>
+    </article>
+  </div>
+  <p class="callout"><strong>顺手检查两处。</strong>用 <code>101</code> 生成的 INCAR 要按任务修改。<code>103</code> 或 <code>104</code> 生成 POTCAR 前需要配置有授权的势库，生成后核对 <code>grep TITEL POTCAR</code> 的元素和势版本是否与 POSCAR 一一对应。</p>
+
+  <h3 class="subheading">跟做一次 Pt(111) 上吸附 H 的投影态密度</h3>
+  <ol>
+    <li><strong>在新目录算静态电子结构。</strong>把吸附优化完成的 <code>CONTCAR</code> 作为 <code>POSCAR</code>，沿用相容的泛函、势库和其他设置。将 <code>NSW = 0</code>、<code>IBRION = -1</code>、<code>LORBIT = 11</code> 写进 INCAR，用经过测试的面内均匀 k 网格和展宽。想看很窄的峰，要分别检查 k 点密度、展宽以及 <code>NEDOS</code> 的能量采样。</li>
+    <li><strong>检查输出。</strong>确认静态计算已收敛，当前目录的 <code>DOSCAR</code> 和 <code>OUTCAR</code> 来自同一次计算。按当前 <code>POSCAR</code> 的顺序记录 H 和相邻表面 Pt 的原子编号。选择原子时编号从 1 开始。</li>
+    <li><strong>分别导出总 DOS 和元素 PDOS。</strong>在 VASPKIT 菜单里用 <code>111</code> 生成 <code>TDOS.dat</code>，用 <code>113</code> 导出 H 和 Pt 的元素投影。想只看 H 旁边某几个 Pt 的 d 轨道，可用 <code>115</code>，按提示先选原子，再选 <code>d</code>。<code>113</code> 的 Pt 曲线汇总了所有 Pt，比较强度时注意原子数量。</li>
+    <li><strong>核对横轴与单位。</strong>先看输出表头及费米能级设置。若已把费米能级移到零，画图时用 <var>E</var> − <var>E</var><sub>F</sub> 标注横轴。跨表面比较绝对能级时，另选共同参照，例如收敛的真空平台。自旋分辨输出的列或文件名会随计算设置而变。</li>
+  </ol>
+  <div class="step-file"><header><strong>Linux · 在静态 DOS 目录中提取</strong></header><pre tabindex="0"><code>printf '%s\n' 111 | vaspkit
+printf '%s\n' 113 | vaspkit
+head -n 3 TDOS.dat
+ls PDOS*</code></pre></div>
+  <p class="note">上面适合常规静态 DOS 与共线自旋工作流。SOC 或非共线计算要先核对本机 VASPKIT 的支持情况与列定义。</p>
+
+  <h3 class="subheading">按要画的图选任务号</h3>
+  <div class="table-shell engine-table" tabindex="0" role="region" aria-label="VASPKIT 任务速查">
+    <table>
+      <thead><tr><th scope="col">任务</th><th scope="col">先准备什么</th><th scope="col">读什么输出</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">111 / 113 / 115<br>态密度</th><td>静态计算的 <code>DOSCAR</code>，投影任务需要 VASP 写出投影，并准备对应的 <code>POSCAR</code>。</td><td><code>TDOS.dat</code>、按元素分开的 <code>PDOS_*.dat</code> 或 <code>PDOS_USER.dat</code>。具体列见表头。</td></tr>
+        <tr><th scope="row">302 / 303 → 211<br>能带</th><td>按 2D / 3D 生成路径。检查 <code>KPATH.in</code> 与 <code>PRIMCELL.vasp</code> 是否配套，结构改变时先在对应晶胞重新自洽。常规半局域泛函先用均匀网格得到 <code>CHGCAR</code>，再在同晶胞下用路径和 <code>ICHARG = 11</code> 算能带。</td><td><code>211</code> 用路径计算的 <code>KPOINTS</code>、<code>EIGENVAL</code> 等导出 <code>BAND.dat</code> 和 <code>KLABELS</code>。金属的能量零点可取均匀网格自洽结果的费米能级。杂化泛函另有 <code>251/252</code> 流程。</td></tr>
+        <tr><th scope="row">314<br>差分电荷密度</th><td>以吸附为例，在相同晶胞、几何位置和 FFT 网格上分别算吸附整体、冻结表面和冻结吸附物。按整体、表面、吸附物的顺序输入三份 <code>CHGCAR</code> 的路径。</td><td><code>CHGDIFF.vasp</code> 可用 VESTA 看三维等值面。跨图对照时保持相同等值面大小并标出正负。</td></tr>
+        <tr><th scope="row">426<br>平面平均势</th><td>在静态计算用 <code>LVHAR = .TRUE.</code> 写出 <code>LOCPOT</code>。运行 <code>426</code> 并选择表面法向，常见 z 法向选 <code>3</code>。</td><td><code>POTPAVG.dat</code> 可画电势能随距离的曲线。中性金属表面常用真空平台减同次计算的费米能级求功函数。检查真空厚度与两侧平台，单面吸附时还要处理偶极。</td></tr>
+        <tr><th scope="row">503<br>d 带中心</th><td>准备带 d 投影的静态 <code>DOSCAR</code>。比较不同表面前，统一原子选择、费米能参照和积分窗口，明确是否包含未占据态。</td><td><code>D_BAND_CENTER</code> 列出各原子和整体的结果。对于吸附活性，更值得对照的是实际活性位点的趋势。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="subheading">其他工具分别擅长什么？</h3>
+  <div class="table-shell engine-table" tabindex="0" role="region" aria-label="VASP 后处理工具分工">
+    <table>
+      <thead><tr><th scope="col">工具</th><th scope="col">适合解决的问题</th><th scope="col">常读的数据或用法</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><a href="https://pymatgen.org/">pymatgen</a></th><td>批量解析结构、能带和态密度，并把结果接到相图或自己的 Python 脚本。</td><td><code>vasprun.xml</code>、POSCAR/CIF 等。用 <code>Vasprun</code> 读取完整的 XML 输出。</td></tr>
+        <tr><th scope="row"><a href="https://vasp.at/py4vasp/latest/">py4vasp</a></th><td>在 Python 或 Jupyter 中读 VASP 结果并快速绘图。</td><td>需要支持 HDF5 的相容 VASP 版本及 <code>vaspout.h5</code>。例如用 <code>Calculation.from_path(".").dos.read()</code> 读取 DOS 数据。</td></tr>
+        <tr><th scope="row"><a href="#ase">ASE</a></th><td>用统一的原子对象做建模、格式转换与自动化，也能读轨迹、能量和力。</td><td>POSCAR、OUTCAR、vasprun.xml 等。比如 <code>ase.io.read("OUTCAR", index=-1)</code> 取最后一步。</td></tr>
+        <tr><th scope="row"><a href="https://smtg-bham.github.io/sumo/tutorials.html">Sumo</a></th><td>想用终端直接画能带、态密度或声子图。</td><td><code>sumo-bandplot</code>、<code>sumo-dosplot</code> 可读对应的 VASP 结果，具体选项看 <code>--help</code>。</td></tr>
+        <tr><th scope="row"><a href="https://jp-minerals.org/vesta/en/">VESTA</a></th><td>查看结构和三维电荷等值面，确认电子积累或耗尽出现在什么位置。</td><td>打开 VASPKIT 导出的 <code>CHGDIFF.vasp</code> 或适配的体数据。</td></tr>
+        <tr><th scope="row"><a href="https://www.henkelmanlab.org/code/bader/">Henkelman 组 Bader</a></th><td>按电荷密度的零通量面划分原子区域，估算不同体系之间的电荷变化。</td><td>常用 <code>CHGCAR</code> 与 <code>AECCAR0 + AECCAR2</code> 参考密度。用 <code>ACF.dat</code> 的电子数比较，检查 FFT 网格收敛。</td></tr>
+        <tr><th scope="row"><a href="https://henkelmangroup.github.io/vtsttools/scripts.html">VTST 脚本</a></th><td>准备 NEB 中间像、提取各像能量和力，并整理反应路径。</td><td>在 NEB 根目录用 <code>nebef.pl</code> 看各像结果。确认端点与中间像输出齐全，再用 <code>nebbarrier.pl</code> 生成 <code>neb.dat</code>。</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="source-row"><a href="https://vaspkit.com/tutorials.html">VASPKIT 官方教程</a><a href="https://vaspkit.com/features.html">VASPKIT 任务号</a><a href="https://vasp.at/wiki/DOSCAR">VASP DOSCAR</a><a href="https://vasp.at/wiki/Computing_the_work_function">VASP 功函数示例</a></p>
+</section>
+
 <section id="free-energy" class="chapter" aria-labelledby="free-energy-title">
   <p class="section-kicker">有限温度自由能与增强采样</p>
   <h2 id="free-energy-title">同一条迁移路线，为什么会有两种势垒？</h2>
@@ -4187,6 +4458,24 @@ python umbrella_demo.py --temperature 450 --out umbrella-450</code></pre></div>
 
 <section id="references" class="chapter"><p class="section-kicker">延伸阅读</p><h2>官方手册与参考资料</h2><p class="section-intro">页面内容、示意图、互动和示例文件可以离线使用。以下资料链接需要联网。</p>
 <div class="reference-list"><article><h3>DFT 与 VASP</h3><a href="https://vasp.at/tutorials/latest/">VASP 官方教程</a> · <a href="https://vasp.at/wiki/Category:INCAR_tag">INCAR 参数索引</a></article><article><h3>路径和过渡态</h3><a href="https://vasp.at/tutorials/latest/transition_states/part1/">VASP 过渡态教程</a> · <a href="https://henkelmangroup.github.io/vtsttools/neb.html">VTST CI-NEB</a></article><article><h3>机器学习势</h3><a href="https://vasp.at/wiki/Machine_learning_force_field_calculations">VASP MLFF 工作流</a> · <a href="https://vasp.at/wiki/ML_MODE">ML_MODE</a> · <a href="https://proceedings.neurips.cc/paper/2022/hash/4a36c3c51af11ed9f34615b81edb5bbc-Abstract-Conference.html">MACE 原论文</a></article><article><h3>中文输入与作业示例</h3><a href="https://www.bigbrosci.com/zh-cn/latest/">大师兄科研网 · Learn VASP the Hard Way</a> · <a href="https://www.bigbrosci.com/zh-cn/latest/LVASPTHW/Ex2.7/">输入文件检查</a></article></div></section>
+<section id="people" class="chapter" aria-labelledby="people-title">
+  <p class="section-kicker">计算化学人物</p>
+  <h2 id="people-title">这些常用方法是谁做出来的？</h2>
+  <p class="section-intro">按本手册里会遇到的方法选了这些人物和合作者。每条都可以回到对应章节，或打开原始论文了解当时解决的是什么问题。</p>
+  <div class="people-grid">
+    <article class="panel"><h3>Walter Kohn、Pierre Hohenberg、Lu Jeu Sham（沈呂九）</h3><p>Hohenberg 与 Kohn 为基态 DFT 建立了理论基础。Kohn 与 Sham 随后用辅助轨道构造了可自洽求解的方程，也留下了今天选择交换关联泛函的问题。</p><p class="source-row"><a href="#dft">DFT 基础</a><a href="https://doi.org/10.1103/PhysRev.136.B864">1964 · Hohenberg–Kohn</a><a href="https://doi.org/10.1103/PhysRev.140.A1133">1965 · Kohn–Sham</a></p></article>
+    <article class="panel"><h3>John P. Perdew、Kieron Burke、Matthias Ernzerhof</h3><p>三人的姓氏缩写就是 PBE。他们构建了广泛使用的 GGA 泛函。Perdew 与 Karla Schmidt 也用雅各布天梯解释交换关联近似如何逐步引入更多信息。</p><p class="source-row"><a href="#functionals">雅各布天梯</a><a href="https://doi.org/10.1103/PhysRevLett.77.3865">1996 · PBE</a></p></article>
+    <article class="panel"><h3>Richard F. W. Bader</h3><p>发展了分子中的原子理论（QTAIM），用电子密度的空间拓扑为原子划分区域。后来常用的 Bader 电荷分析就是沿着这条思路把电子数积分到各原子区域。</p><p class="source-row"><a href="#electronic-structure">Bader 电荷怎么读</a><a href="https://academic.oup.com/book/53229/chapter-abstract/422009863">1990 · QTAIM 专著</a></p></article>
+    <article class="panel"><h3>Graeme Henkelman、Hannes Jónsson</h3><p>两人提出了用力搜索鞍点的 Dimer 方法，与 Blas P. Uberuaga 发展了攀爬图像 NEB。Henkelman、Andri Arnaldsson 和 Jónsson 还发表了在离散网格上快速做 Bader 划分的算法。</p><p class="source-row"><a href="#path">过渡态动画</a><a href="https://doi.org/10.1063/1.480097">1999 · Dimer</a><a href="https://doi.org/10.1063/1.1329672">2000 · CI-NEB</a><a href="https://theory.cm.utexas.edu/henkelman/pubs/henkelman06_354.pdf">2006 · Bader 网格算法</a></p></article>
+    <article class="panel"><h3>Jens K. Nørskov、Bjørk Hammer</h3><p>Hammer 与 Nørskov 用 d 带模型解释过渡金属表面的化学吸附趋势。Nørskov 与 Jan Rossmeisl 等人用计算氢电极把第一性原理得到的反应能与电极电势联系起来。</p><p class="source-row"><a href="#catalysis">催化理论</a><a href="https://doi.org/10.1038/376238a0">1995 · 表面电子结构</a><a href="https://doi.org/10.1021/jp047349j">2004 · 计算氢电极</a></p></article>
+    <article class="panel"><h3>Georg Kresse、Jürgen Hafner、Jürgen Furthmüller</h3><p>Kresse 与 Hafner 的早期工作把第一性原理用于金属的总能和动力学计算。Kresse 与 Furthmüller 发表的平面波迭代算法，是理解 VASP 怎样高效做自洽计算的一个入口。</p><p class="source-row"><a href="#workflow">VASP 自洽过程</a><a href="https://doi.org/10.1103/PhysRevB.47.558">1993 · 第一性原理分子动力学</a><a href="https://doi.org/10.1103/PhysRevB.54.11169">1996 · 平面波迭代算法</a></p></article>
+    <article class="panel"><h3>Peter E. Blöchl</h3><p>提出投影缀加波方法（PAW）。用平滑的辅助波函数便于计算，再用原子附近的局域投影恢复细节。VASP 用户在势库和投影分析里都会遇到它。</p><p class="source-row"><a href="#dft">平面波与 PAW</a><a href="https://doi.org/10.1103/PhysRevB.50.17953">1994 · PAW 原论文</a></p></article>
+    <article class="panel"><h3>Stefan Grimme</h3><p>与合作者发展了 D3 等色散修正。对层状材料、分子晶体和许多分子吸附问题，这类方法为常用泛函补上了一部分长程吸引。</p><p class="source-row"><a href="#u-dispersion">色散怎么选</a><a href="https://doi.org/10.1063/1.3382344">2010 · D3</a><a href="https://doi.org/10.1002/jcc.21759">2011 · D3 阻尼函数</a></p></article>
+    <article class="panel"><h3>Roberto Car、Michele Parrinello</h3><p>提出将密度泛函理论与分子动力学结合的 Car–Parrinello 方法，使化学键与电子结构能随着原子运动一起进入模拟。</p><p class="source-row"><a href="#free-energy">有限温度模拟</a><a href="https://doi.org/10.1103/PhysRevLett.55.2471">1985 · Car–Parrinello</a></p></article>
+    <article class="panel"><h3>John A. Pople</h3><p>推动了分子量子化学方法、标准化计算模型与 Gaussian 程序的发展。与 Kohn 共享 1998 年诺贝尔化学奖，两人的工作分别推动了量子化学计算方法与 DFT 的发展。</p><p class="source-row"><a href="#software-comparison">分子与周期软件</a><a href="https://www.nobelprize.org/prizes/chemistry/1998/pople/facts/">诺贝尔奖资料</a></p></article>
+  </div>
+</section>
+
 </div></div></main>
 <footer class="site-support" id="contact" aria-labelledby="site-support-title">
   <div class="site-support-inner">
