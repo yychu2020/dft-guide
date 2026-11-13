@@ -61,6 +61,16 @@
   .toc-children{padding:.16rem 0 .36rem .38rem}
   .chapter-menu .toc-children a{border-inline-start:2px solid var(--line)}
   .chapter-menu nav{width:min(18rem,calc(100vw - 2rem));overscroll-behavior:contain}
+
+  .k-phase{margin-block:1rem}
+  .k-phase-cells{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.4rem;margin:.9rem 0;background:var(--soft);padding:.6rem;border-radius:8px}
+  .k-phase-cells>div{display:grid;justify-items:center;gap:.55rem;padding:.4rem .15rem .55rem;border-right:1px dashed #95ab9e;font-size:clamp(.65rem,2.2vw,.85rem);white-space:nowrap}
+  .k-phase-cells>div:last-child{border-right:0}
+  .k-phase-cells i{position:relative;display:block;width:clamp(23px,6vw,48px);aspect-ratio:1;border:1px solid #94afa1;border-radius:50%;background:var(--surface)}
+  .k-phase-cells i::after{content:"";position:absolute;left:calc(50% - 1px);top:12%;width:3px;height:38%;border-radius:2px;background:var(--teal);transform-origin:50% 100%;transform:rotate(var(--phase));transition:transform .2s ease-out}
+  .k-phase-result{color:var(--teal);font-weight:750}
+  #reference-files .callout + .panel{margin-top:1rem}
+  .template-previews .step-file{margin:.65rem 0 .35rem}
 </style>
 </head>
 <body id="top">
@@ -159,6 +169,14 @@
       </div>
     </details>
     <details class="toc-group" name="sidebar-chapter-group">
+      <summary>算例参考文件</summary>
+      <div class="toc-children">
+        <a href="#reference-files">VASP 输入模板与整套下载</a>
+        <a href="#reference-slurm">Slurm 提交模板</a>
+        <a href="#reference-analysis">后处理与完整案例</a>
+      </div>
+    </details>
+    <details class="toc-group" name="sidebar-chapter-group">
       <summary>资料与联系</summary>
       <div class="toc-children">
         <a href="#references">参考资料</a>
@@ -179,6 +197,7 @@
     <article class="concept"><h3>搭结构、跑任务、读结果</h3><p>配好 VASP、ASE 和 VASPKIT，用脚本建表面、准备四个输入文件，再从输出里找力和能量。</p><a href="#installation">进入软件安装 →</a></article>
     <article class="concept"><h3>从稳定构型走到反应机制</h3><p>比较 NEB、CI-NEB 和 Dimer，练习算吸附能和迁移势垒，最后看恒电势与机器学习势能回答哪些新问题。</p><a href="#practice">打开 Pt(111) 实战 →</a></article>
   </div>
+  <p class="source-row"><a href="#reference-files">按任务找带注释的输入模板 →</a><a href="#reference-slurm">查看 Slurm 模板 →</a></p>
   <h3 class="subheading">第一次学，建议这样走</h3>
   <ol class="home-route">
     <li><div><strong>先看懂计算在做什么</strong><p>读 DFT 和 VASP 工作流，重点看电子与离子双层循环。用雅各布天梯比较泛函，遇到局域 d/f 电子或弱相互作用时再查 DFT+U 与色散。</p><a href="#dft">DFT 基础</a> · <a href="#functionals">泛函天梯</a> · <a href="#u-dispersion">DFT+U 与色散</a> · <a href="#workflow">VASP 工作流</a> · <a href="#parameters">参数手册</a></div></li>
@@ -221,17 +240,42 @@
 <section id="reciprocal-space" class="chapter" aria-labelledby="reciprocal-title">
   <p class="section-kicker">晶胞与 k 点</p>
   <h2 id="reciprocal-title">k 点到底采的是什么？</h2>
-  <p class="section-intro">同一种晶胞沿三个方向不断重复。电子波跨过一个晶胞时，可以带着不同的相位变化。k 点标记这种相位变化，程序通过取一组代表性的 k 点来近似整个晶体的电子态。</p>
+  <p class="section-intro">先记住一句话。<strong>k 点给电子波跨晶胞时的“转几格”规则标号。</strong>计算时挑一些有代表性的规则，分别求电子态，再按权重合起来。下面先用一排晶胞讲，三维就是给三个方向各定一条规则。</p>
+  <div class="panel k-phase" id="k-phase-demo">
+    <h3>把相位想成一根指针</h3>
+    <p>把同一个晶胞复制五次。在每个晶胞里，选同一个相对位置，用指针表示那里电子波的相位。点下面的按钮，看看跨一个晶胞时每次转同样的角度，会出现什么图案。</p>
+    <div class="tabs" role="group" aria-label="每跨一个晶胞的相位转角">
+      <button type="button" data-phase="0" aria-pressed="false">0° · Γ 点</button>
+      <button type="button" data-phase="90" aria-pressed="true">90° · 每步四分之一圈</button>
+      <button type="button" data-phase="180" aria-pressed="false">180° · 每步半圈</button>
+    </div>
+    <div class="k-phase-cells" aria-hidden="true">
+      <div><span>晶胞 1</span><i style="--phase:0deg"></i></div>
+      <div><span>晶胞 2</span><i style="--phase:90deg"></i></div>
+      <div><span>晶胞 3</span><i style="--phase:180deg"></i></div>
+      <div><span>晶胞 4</span><i style="--phase:270deg"></i></div>
+      <div><span>晶胞 5</span><i style="--phase:0deg"></i></div>
+    </div>
+    <p class="k-phase-result" aria-live="polite">每步转 90°，指针依次指向 12、3、6、9、12 点钟。</p>
+    <p class="note">指针只画相位。电子波在晶胞里面仍会起伏。Γ 点意味着相邻晶胞里同一相对位置的波函数相同，盒内仍然可以有很多不同的电子态。</p>
+  </div>
+  <div class="two-up xc-notes">
+    <article class="concept"><h3>为什么要取多个 k 点？</h3><p>就像估果园的平均产量，要在不同区域抽样，再按每个样本代表的面积加权。这里“果园”是相位规则所在的倒易空间，样本是 k 点。想知道沿特定方向怎么变，可以另外走一条路线画能带。</p></article>
+    <article class="concept"><h3>什么时候先试 Γ？</h3><p>大真空盒里的孤立分子，周期镜像之间耦合很小时，常可从 Γ-only 起步。表面板层通常只在真空方向取 1，面内继续取样。小晶胞金属常需要更密的网格，判断标准是加密后目标量变化够不够小。</p></article>
+  </div>
   <h3 class="subheading">从实空间基矢到倒易基矢</h3>
+  <p><strong>把倒易基矢想成斜格纸上的三把计步尺。</strong>第一把只数你跨了多少层由第二、第三根实空间基矢张成的平行面。沿平行面走，它读零，所以尺的测量方向垂直于这个面。沿第一根实空间基矢走一步，它就读一圈。第一根箭头可以斜着穿过平行面。</p>
+  <details class="quiz"><summary>想对上公式？展开看倒易基矢和相位</summary>
   <p>实空间的 <b>a</b><sub>1</sub>、<b>a</b><sub>2</sub>、<b>a</b><sub>3</sub> 是晶胞的三个平移方向。这里采用带 2π 的倒易基矢 <b>b</b><sub>i</sub>，这样 <b>k</b>·<b>a</b> 直接给相位角（弧度）。有些手册把 2π 提到公式外，读公式时先确认约定。</p>
   <div class="science-equation"><math display="block"><mrow><msub><mi mathvariant="bold">b</mi><mi>i</mi></msub><mo>⋅</mo><msub><mi mathvariant="bold">a</mi><mi>j</mi></msub><mo>=</mo><mn>2</mn><mi>π</mi><msub><mi>δ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>，</mo><mspace width="0.6em"/><msub><mi mathvariant="bold">b</mi><mn>1</mn></msub><mo>=</mo><mfrac><mrow><mn>2</mn><mi>π</mi><mo>(</mo><msub><mi mathvariant="bold">a</mi><mn>2</mn></msub><mo>×</mo><msub><mi mathvariant="bold">a</mi><mn>3</mn></msub><mo>)</mo></mrow><mrow><msub><mi mathvariant="bold">a</mi><mn>1</mn></msub><mo>⋅</mo><mo>(</mo><msub><mi mathvariant="bold">a</mi><mn>2</mn></msub><mo>×</mo><msub><mi mathvariant="bold">a</mi><mn>3</mn></msub><mo>)</mo></mrow></mfrac></mrow></math></div>
   <div class="two-up">
     <article class="panel"><h3>“正交”说的是哪两根箭头？</h3><p><b>b</b><sub>1</sub> 垂直于 <b>a</b><sub>2</sub> 和 <b>a</b><sub>3</sub>，因为叉积沿着两者所在平面的法线。它与 <b>a</b><sub>1</sub> 的点积固定为 2π。实空间晶胞是斜的时，<b>b</b><sub>1</sub> 可以斜着对 <b>a</b><sub>1</sub>，倒易基矢之间也可以互成斜角。<b>b</b><sub>2</sub>、<b>b</b><sub>3</sub> 按循环顺序同理。</p></article>
     <article class="panel"><h3>为什么这么定义？</h3><p>若 <b>k</b> = x<sub>1</sub><b>b</b><sub>1</sub> + x<sub>2</sub><b>b</b><sub>2</sub> + x<sub>3</sub><b>b</b><sub>3</sub>，电子波平移一个 <b>a</b><sub>j</sub> 时，Bloch 相位因子就是 exp(i2πx<sub>j</sub>)。于是每个倒易分量只控制一条晶胞平移的相位。譬如 x<sub>1</sub> = ½ 表示沿 <b>a</b><sub>1</sub> 平移后乘 −1。<b>k</b> 的量纲是长度的倒数。</p></article>
   </div>
-  <h3 class="subheading">第一布里渊区是倒易原点的“地盘”</h3>
+  </details>
+  <h3 class="subheading">第一布里渊区像离 Γ 站最近的服务区</h3>
   <div class="lead-grid">
-    <article class="panel"><p>从倒易原点 Γ 出发，连到周围的倒易格点，在每条连线的中点画垂直平分线（三维是平分面）。这些边界围起来的是第一布里渊区。里面每一点到 Γ 的距离都不大于到其他倒易格点的距离，因此它也是以 Γ 为中心的 Wigner–Seitz 原胞。</p><p>如果把 <b>k</b> 加上任意一个倒易格矢 <b>G</b>，沿每条晶胞平移的相位只多出 2π 的整数倍。于是可以把等价波矢折回同一块区域。电子密度、总能和态密度涉及对这块区域求积分。通常用均匀网格加权求和，若能利用对称性，只算不等价点并赋予相应权重。</p><p>画能带时沿 Γ、X、K 等高对称点之间的路径取样，是为了看能量随方向怎么变。算自洽电荷密度和 DOS 时用覆盖整个区的网格。高对称点名称和形状随晶格而变。</p></article>
+    <article class="panel"><p>想象倒易格点都是地铁站。把每个位置分给最近的车站，分给 Γ 站的区域就是第一布里渊区。画图时，从 Γ 连到周围的站，在每条连线的中点画垂直平分线（三维是平分面）。这些边界围起来的是第一布里渊区。里面每一点到 Γ 的距离都不大于到其他倒易格点的距离，因此它也是以 Γ 为中心的 Wigner–Seitz 原胞。</p><p>如果把 <b>k</b> 加上任意一个倒易格矢 <b>G</b>，沿每条晶胞平移的相位只多出 2π 的整数倍。于是可以把等价波矢折回同一块区域。电子密度、总能和态密度涉及对这块区域求积分。通常用均匀网格加权求和，若能利用对称性，只算不等价点并赋予相应权重。</p><p>画能带时沿 Γ、X、K 等高对称点之间的路径取样，是为了看能量随方向怎么变。算自洽电荷密度和 DOS 时用覆盖整个区的网格。高对称点名称和形状随晶格而变。</p></article>
     <figure class="viz">
       <svg viewBox="0 0 380 254" role="img" aria-labelledby="recip-bz-title recip-bz-desc">
         <title id="recip-bz-title">二维三角倒易点阵的第一布里渊区</title>
@@ -257,16 +301,40 @@
     <article class="panel"><h3>没有 KPOINTS 文件，VASP 也会选点</h3><p>VASP 没看到 <code>KPOINTS</code> 时，会按 <code>KSPACING</code> 等设置生成网格。<code>KGAMMA = .TRUE.</code> 表示生成的网格包含 Γ，网格还可以有许多其他点。聊天里说“考虑 k 点”，通常是把 Γ-only 与多点网格作比较。真正孤立的分子用非周期方法时，可以没有晶格 k 采样。</p></article>
   </div>
   <h3 class="subheading">晶胞变长，为什么可少取 k 点？</h3>
+  <p><strong>想象用同一把尺在地图上打点。</strong>实空间某一边拉长两倍，倒易地图对应方向约缩成一半。尺上的格子大小不变，短边只需要大约一半的点。比如某方向原先用 8 点，等密度的超胞可以先试 4 点。</p>
+  <details class="quiz"><summary>为什么倒易地图会缩小？</summary>
   <p>对直角晶胞，沿长度 L<sub>i</sub> 的倒易基矢长度为 2π/L<sub>i</sub>。选 N<sub>i</sub> 个等距点，间距约为 |<b>b</b><sub>i</sub>|/N<sub>i</sub>。因此固定倒易空间的采样间距时，实空间那一边变成 2 倍，倒易方向变成一半，所需点数也约减半。斜晶胞按实际倒易矢量和网格对称性选。总点数还要受整数取整、平移、对称性和至少取一点的约束。</p>
   <p>例如同一表面从 1 × 1 扩为 2 × 2，面内 Γ 中心的 8 × 8 × 1 可以用 4 × 4 × 1 做等密度起点。若只是把原胞机械复制，原来区里的能带会折进更小的超胞布里渊区。若加了吸附物或缺陷，周期性和能带本身都可能变，需针对吸附能、力、磁矩或目标性质重新检查收敛。</p>
+  <p>还可以用指针理解能带折叠。把两个完全相同的原胞合成一盒。原胞每步转 0° 或 180°，两步后都回到原方向，所以这两类旧波都能出现在新盒的 Γ 点。真实吸附或缺陷会改变原来的周期，仍要测试采样。</p>
+  </details>
   <div class="step-file"><header><strong>KPOINTS · 显式只取 Γ</strong></header><pre tabindex="0"><code>Gamma only
 0
 Gamma
 1 1 1
 0 0 0</code></pre></div>
-  <p class="note">第二行的 <code>0</code> 表示让程序从网格参数生成点，第四行才指定三个方向的网格尺寸。</p>
-  <p class="source-row"><a href="#parameters">回到 VASP 参数速查</a><a href="https://vasp.at/wiki/KPOINTS">VASP · KPOINTS 与对称性</a><a href="https://vasp.at/wiki/KSPACING">VASP · KSPACING</a><a href="https://vasp.at/wiki/K-point_integration">VASP · 倒易空间积分</a><a href="https://www-thphys.physics.ox.ac.uk/people/SteveSimon/condmat2011/LectureNotes.pdf">Oxford · 倒易晶格与第一布里渊区</a></p>
+  <p class="note">第二行的 <code>0</code> 表示从网格参数生成点。第四行的 <code>1 1 1</code> 才表示三个方向各只取一个点。写了 <code>Gamma</code> 再填 <code>4 4 4</code> 仍然是多点网格。</p>
+  <p class="source-row"><a href="#reference-files">下载分子、体相和板层的 KPOINTS 模板</a><a href="#parameters">回到 VASP 参数速查</a><a href="https://vasp.at/wiki/KPOINTS">VASP · KPOINTS 与对称性</a><a href="https://vasp.at/wiki/KSPACING">VASP · KSPACING</a><a href="https://vasp.at/wiki/K-point_integration">VASP · 倒易空间积分</a><a href="https://www-thphys.physics.ox.ac.uk/people/SteveSimon/condmat2011/LectureNotes.pdf">Oxford · 倒易晶格与第一布里渊区</a></p>
 </section>
+<script>
+(() => {
+  const demo = document.getElementById('k-phase-demo');
+  const buttons = Array.from(demo.querySelectorAll('[data-phase]'));
+  const hands = Array.from(demo.querySelectorAll('.k-phase-cells i'));
+  const label = demo.querySelector('.k-phase-result');
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const step = Number(button.dataset.phase);
+      const times = hands.map((hand, index) => {
+        const angle = index * step % 360;
+        hand.style.setProperty('--phase', angle + 'deg');
+        return angle / 30 || 12;
+      });
+      buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      label.textContent = '每步转 ' + step + '°，指针依次指向 ' + times.join('、') + ' 点钟。';
+    });
+  }
+})();
+</script>
 
 <section id="functionals" class="chapter" aria-labelledby="functionals-title">
   <p class="section-kicker">交换关联泛函</p>
@@ -4925,6 +4993,173 @@ python umbrella_demo.py --temperature 450 --out umbrella-450</code></pre></div>
   #frontiers .frontier-next{margin:1.2rem 0 0;padding:.78rem .95rem;border-inline-start:3px solid var(--teal);border-radius:0 8px 8px 0;background:var(--soft)}
   @media(max-width:650px){#frontiers .frontier-grid{grid-template-columns:minmax(0,1fr)}}
 </style>
+
+<section id="reference-files" class="chapter" aria-labelledby="reference-files-title">
+  <p class="section-kicker">算例参考文件</p>
+  <h2 id="reference-files-title">先挑任务，再拿对应的输入文件</h2>
+  <p class="section-intro">这些是带注释的起步模板。先用一个简单体系跑通流程，再换成自己的结构并做收敛测试。ZIP 内的 README 说明各目录怎么用、要从前一步拷贝什么、结果到哪里看。</p>
+  <p><a id="reference-download" class="cta primary" download="vasp-case-templates.zip" href="data:application/zip;base64,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AG5dnOVJMloCAACiAwAALQAAAAAAAAAAAAAAgAGqEgAAdmFzcC1jYXNlLXRlbXBsYXRlcy8wNi1uZWIvSU5DQVIubmViLXN0YW5kYXJkUEsBAhQAFAAAAAgAkgBuXbOkqaPxAQAA1gIAAC8AAAAAAAAAAAAAAIABTxUAAHZhc3AtY2FzZS10ZW1wbGF0ZXMvMDYtbmViL0lOQ0FSLm5lYi12dHN0LWNsaW1iUEsBAhQAFAAAAAgAkgBuXWrkUyvuAAAAGgEAADUAAAAAAAAAAAAAAIABjRcAAHZhc3AtY2FzZS10ZW1wbGF0ZXMvMDctbWV0aG9kLW92ZXJsYXlzL0lOQ0FSLnBiZS1kM2JqUEsBAhQAFAAAAAgAkgBuXQu+qqWXAQAANAIAADgAAAAAAAAAAAAAAIABzhgAAHZhc3AtY2FzZS10ZW1wbGF0ZXMvMDctbWV0aG9kLW92ZXJsYXlzL0lOQ0FSLnBsdXMtdS1mZS1vUEsBAhQAFAAAAAgAkgBuXTPN+t5eAQAA/AEAADwAAAAAAAAAAAAAAIABuxoAAHZhc3AtY2FzZS10ZW1wbGF0ZXMvMDctbWV0aG9kLW92ZXJsYXlzL0lOQ0FSLnZhc3Bzb2xwcC13YXRlclBLAQIUABQAAAAIAJIAbl3ENM1vNwIAAGkDAAAlAAAAAAAAAAAAAACAAXMcAAB2YXNwLWNhc2UtdGVtcGxhdGVzLzA4LWFpbWQvSU5DQVIubnZ0UEsBAhQAFAAAAAgAkgBuXVNxWK6tBAAA4AcAAC4AAAAAAAAAAAAAAIAB7R4AAHZhc3AtY2FzZS10ZW1wbGF0ZXMvMDktc2x1cm0vc3VibWl0LW5lYi5zYmF0Y2hQSwECFAAUAAAACACSAG5dg6kA578DAABeBQAALwAAAAAAAAAAAAAAgAHmIwAAdmFzcC1jYXNlLXRlbXBsYXRlcy8wOS1zbHVybS9zdWJtaXQtdmFzcC5zYmF0Y2hQSwECFAAUAAAACACSAG5dTQMMP1gDAADrBQAAMgAAAAAAAAAAAAAAgAHyJwAAdmFzcC1jYXNlLXRlbXBsYXRlcy8xMC1wb3N0cHJvY2Vzcy9yZWFkX29zemljYXIucHlQSwECFAAUAAAACACSAG5dM7IZDtALAAAcFAAAHQAAAAAAAAAAAAAAgAGaKwAAdmFzcC1jYXNlLXRlbXBsYXRlcy9SRUFETUUubWRQSwUGAAAAABYAFgC0BwAApTcAAAAA">下载整套参考文件（ZIP）</a></p>
+  <div class="table-shell" role="region" aria-label="按计算任务选择模板" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">想算什么</th><th scope="col">用哪份模板</th><th scope="col">开算前确认</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">气相分子</th><td>O₂ 大真空盒、Γ-only、三重态初值</td><td>检查真空和磁矩。算吸附或反应时，把气相参考定义写清楚。</td></tr>
+        <tr><th scope="row">体相与表面优化</th><td>Si 体相、Pt(111) 吸附 H</td><td>体相可优化晶胞，板层一般固定晶胞并检查层数、真空和面内 k 网格。</td></tr>
+        <tr><th scope="row">静态能量、DOS 和能带</th><td>静态 PDOS、Si 半局域泛函能带</td><td>先用均匀网格自洽。能带路径必须和使用的晶胞匹配，不能拿它来做 DOS。</td></tr>
+        <tr><th scope="row">振动和过渡态</th><td>有限位移频率、标准 NEB 与 VTST 输入</td><td>检查端点和图像的原子顺序，选对安装版本，再用振型判断鞍点。</td></tr>
+        <tr><th scope="row">改变物理模型</th><td>DFT+U、色散和隐式水参数片段</td><td>按体系和版本选用。先清理相互冲突的标签，再重算所有要做差的能量。</td></tr>
+        <tr><th scope="row">有限温度</th><td>AIMD 起步输入</td><td>做短跑检查温度、时间步与电子收敛，再安排平衡和生产采样。</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="callout"><strong>提交前检查。</strong>从授权势库准备 POTCAR，顺序与 POSCAR 一致。换掉模板里的示例资源和计算设置。可先跑小算例，确认程序、输出与单位都对。</p>
+  <div class="panel"><h3>带注释的输入怎么读？</h3><p>INCAR 的行内注释解释每个参数。POSCAR、KPOINTS 保持可读入的格式，结构与网格的说明写在标题行和 README 里。</p>
+    <div class="step-file"><header><strong>01-gas-o2/INCAR</strong></header><pre tabindex="0"><code>SYSTEM = O2 triplet relaxation  # 三重态气相 O2，另检查最终磁矩约 2 μB
+GGA    = PE                     # PBE，使用配套 PAW 势
+ENCUT  = 520                    # eV，示意起点，按所用势库和目标性质检查
+PREC   = Accurate
+EDIFF  = 1E-7                   # 每个电子步的能量收敛阈值，eV
+ISPIN  = 2                      # 开壳层分子使用共线自旋极化
+MAGMOM = 2*1.0                  # 两个 O 的同向初始磁矩
+NUPDOWN = 2                     # 固定自旋通道电子数差，指定三重态分支
+ISMEAR = 0                      # Γ 点孤立分子，使用小高斯展宽
+SIGMA  = 0.05                   # eV，检查占据与参考能是否稳定
+IBRION = 2                      # 共轭梯度优化原子位置
+ISIF   = 2                      # 只动原子，盒子大小不变
+NSW    = 80                     # 最大离子步数
+EDIFFG = -0.02                  # 负值是力阈值，eV/Å
+ISYM   = 0                      # 让实际结构与自旋设置决定结果
+LREAL  = .FALSE.                # 小分子使用倒空间投影
+LWAVE  = .FALSE.                # 此例不留波函数文件
+LCHARG = .FALSE.                # 不需要 CHGCAR 时关闭</code></pre></div>
+  </div>
+</section>
+
+<section id="reference-slurm" class="chapter" aria-labelledby="reference-slurm-title">
+  <p class="section-kicker">算例参考文件</p>
+  <h2 id="reference-slurm-title">Slurm 模板：先改哪几行？</h2>
+  <p class="section-intro">ZIP 内有普通 VASP 和 NEB 两份提交模板。资源值都是起步示例。集群的账号、分区、软件模块和 MPI 启动方式要按本机文档填写。</p>
+  <ol>
+    <li>按站点规定修改 <code>--account</code>（若需要）、<code>--partition</code>、节点数、MPI 任务数和最长运行时间。</li>
+    <li>确认 VASP 可执行文件能从作业环境找到。若中心要求使用站点自己的 MPI 启动器或包装脚本，替换模板的启动行。</li>
+    <li>在计算目录用 <code>sbatch</code> 提交。用 <code>squeue -u "$USER"</code> 看队列，再看 Slurm 日志与 VASP 的实际收敛。作业结束和计算收敛是两项检查。</li>
+    <li>跑 NEB 时，核对图像目录和 <code>IMAGES</code>。MPI 总任务数按参与计算的中间图像均分，端点目录另作检查。</li>
+  </ol>
+  <div class="template-previews">
+    <details class="quiz" open><summary>普通 VASP 模板</summary><div class="step-file"><header><strong>submit-vasp.sbatch</strong></header><pre tabindex="0"><code>#!/usr/bin/env bash
+#SBATCH --job-name=vasp
+#SBATCH --nodes=1
+#SBATCH --ntasks=24
+#SBATCH --cpus-per-task=1
+#SBATCH --time=04:00:00
+#SBATCH --output=slurm-%j.out
+#SBATCH --error=slurm-%j.err
+
+# 分区、账号和内存按集群说明填写，可在 sbatch 命令上指定。
+# 按本集群指南加载 VASP 与匹配的 MPI，例如取消注释并改为真实模块名。
+# module load vasp
+set -euo pipefail
+
+# 从提交作业的计算目录读取四个输入文件。
+cd -- "${SLURM_SUBMIT_DIR:?请在算例目录中用 sbatch 提交}"
+for file in INCAR POSCAR KPOINTS POTCAR; do
+    if [[ ! -s "$file" ]]; then
+        printf '缺少或为空：%s\n' "$file" &gt;&amp;2
+        exit 1
+    fi
+done
+
+# 默认用标准版；若本站点要求别的路径，提交前 export VASP_BIN=/path/to/vasp_std。
+vasp_bin=${VASP_BIN:-vasp_std}
+if ! command -v -- "$vasp_bin" &gt;/dev/null 2&gt;&amp;1; then
+    printf '找不到 VASP 可执行文件：%s。请检查模块和 VASP_BIN。\n' "$vasp_bin" &gt;&amp;2
+    exit 1
+fi
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+
+# 这里采用 srun；如果本站点要求 mpirun 或 --mpi 类型，请依集群文档修改。
+# 每次作业用不同日志名，便于保留已有的标准输出。
+srun "$vasp_bin" &gt; "vasp-${SLURM_JOB_ID:?}.out" 2&gt;&amp;1
+# 作业退出为 0 只代表命令正常结束。另读 OUTCAR 和 OSZICAR 判断计算是否收敛。</code></pre></div></details>
+    <details class="quiz"><summary>NEB 模板</summary><div class="step-file"><header><strong>submit-neb.sbatch</strong></header><pre tabindex="0"><code>#!/usr/bin/env bash
+#SBATCH --job-name=neb
+#SBATCH --nodes=1
+#SBATCH --ntasks=24
+#SBATCH --cpus-per-task=1
+#SBATCH --time=12:00:00
+#SBATCH --output=neb-slurm-%j.out
+#SBATCH --error=neb-slurm-%j.err
+
+# IMAGES=3 时，24 个 MPI rank 分成每像 8 个。换像数时重新分配。
+# 根据集群说明配置分区、账号、模块和 MPI。CI-NEB 使用已编入 VTST 的程序。
+# module load vasp
+set -euo pipefail
+cd -- "${SLURM_SUBMIT_DIR:?请在 NEB 根目录中用 sbatch 提交}"
+for file in INCAR KPOINTS POTCAR; do
+    if [[ ! -s "$file" ]]; then
+        printf '缺少或为空：%s\n' "$file" &gt;&amp;2
+        exit 1
+    fi
+done
+
+# 约定 IMAGES 单独一行，允许空格和 # 或 ! 注释；重复设置也会报错。
+images=$(awk '{
+    line = $0
+    sub(/[!#].*$/, "", line)
+    if (toupper(line) ~ /^[[:space:]]*IMAGES[[:space:]]*=/) {
+        sub(/^[^=]*=[[:space:]]*/, "", line)
+        sub(/[[:space:]]+$/, "", line)
+        print line
+    }
+}' INCAR)
+if [[ ! "$images" =~ ^[1-9][0-9]?$ ]] || (( images &gt; 98 )); then
+    printf '请在 INCAR 里用单独一行设置 IMAGES 为 1 至 98 的整数。\n' &gt;&amp;2
+    exit 1
+fi
+ranks=${SLURM_NTASKS:?请在脚本或 sbatch 命令上指定 MPI 任务数}
+if [[ ! "$ranks" =~ ^[1-9][0-9]*$ ]] || (( ranks % images != 0 )); then
+    printf 'MPI 任务数 %s 必须能被中间像数 %s 整除。\n' "$ranks" "$images" &gt;&amp;2
+    exit 1
+fi
+for (( i = 0; i &lt;= images + 1; i++ )); do
+    printf -v image_dir '%02d' "$i"
+    if [[ ! -s "$image_dir/POSCAR" ]]; then
+        printf '缺少或为空：%s/POSCAR\n' "$image_dir" &gt;&amp;2
+        exit 1
+    fi
+done
+
+vasp_bin=${VASP_BIN:-vasp_std}
+if ! command -v -- "$vasp_bin" &gt;/dev/null 2&gt;&amp;1; then
+    printf '找不到 VASP 可执行文件：%s。请检查模块和 VASP_BIN。\n' "$vasp_bin" &gt;&amp;2
+    exit 1
+fi
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-1}"
+srun "$vasp_bin" &gt; "neb-vasp-${SLURM_JOB_ID:?}.out" 2&gt;&amp;1
+# 在 01 等像目录看 OUTCAR。用于势垒的 00/04 端点能量通常来自单独静态计算。</code></pre></div></details>
+  </div>
+  <p class="source-row"><a href="#reference-files">下载整套模板</a><a href="#linux-cli">Linux 命令行练习</a><a href="https://slurm.schedmd.com/sbatch.html">Slurm · sbatch</a><a href="https://vasp.at/wiki/IMAGES">VASP · IMAGES</a></p>
+</section>
+
+<section id="reference-analysis" class="chapter" aria-labelledby="reference-analysis-title">
+  <p class="section-kicker">算例参考文件</p>
+  <h2 id="reference-analysis-title">算完后从哪几份文件取数？</h2>
+  <p class="section-intro">读文件前先看电子步和离子步有没有收敛。以下工具适合教学和人工复核，可以从输出里摘数，顺着查结果来自哪一次计算。</p>
+  <div class="step-file"><header><strong>10-postprocess/read_oszicar.py · 导出最后一条 E0</strong></header><pre tabindex="0"><code># 在解压后的包目录里运行，文件夹换成你的计算目录
+python 10-postprocess/read_oszicar.py 01-gas-o2 02-bulk-si &gt; energies.csv
+
+# 再到各计算目录核对电子步和几何优化
+tail -n 12 01-gas-o2/OSZICAR
+rg 'reached required accuracy' 01-gas-o2/OUTCAR</code></pre></div>
+  <p class="note">脚本读到 E0 只说明输出里有能量。优化时还要核对力或能量的收敛阈值，静态和频率任务则查各自的计算目标。比较不同目录前先确认参考态与计算设置一致。</p>
+  <h3 class="subheading">想直接跑完整练习</h3>
+  <ul>
+    <li><a href="#practice">Pt(111) 表面吸附和扩散</a>。从 ASE 建模到吸附能、NEB 和过渡态验证，含整套可下载输入与脚本。</li>
+    <li><a href="#catmap-practice">CatMAP CO 氧化</a>。从 VASP 能量表到覆盖度、TOF 和火山图，含整套可下载文件。</li>
+    <li><a href="#free-energy">有限温度自由能练习</a>。用 H/Pt(111) 扩散理解反应坐标、伞形采样与元动力学，含 PLUMED 示例。</li>
+  </ul>
+  <p class="source-row"><a href="#reference-files">下载整套模板</a><a href="#post-tools">VASPKIT 与其他后处理工具</a></p>
+</section>
 
 <section id="references" class="chapter"><p class="section-kicker">延伸阅读</p><h2>官方手册与参考资料</h2><p class="section-intro">页面内容、示意图、互动和示例文件可以离线使用。以下资料链接需要联网。想按方向找论文和数据库，可查看<a href="#reading-guide">期刊与网站</a>。</p>
 <div class="reference-list"><article><h3>DFT 与 VASP</h3><a href="https://vasp.at/tutorials/latest/">VASP 官方教程</a> · <a href="https://vasp.at/wiki/Category:INCAR_tag">INCAR 参数索引</a></article><article><h3>路径和过渡态</h3><a href="https://vasp.at/tutorials/latest/transition_states/part1/">VASP 过渡态教程</a> · <a href="https://henkelmangroup.github.io/vtsttools/neb.html">VTST CI-NEB</a></article><article><h3>机器学习势</h3><a href="https://vasp.at/wiki/Machine_learning_force_field_calculations">VASP MLFF 工作流</a> · <a href="https://vasp.at/wiki/ML_MODE">ML_MODE</a> · <a href="https://proceedings.neurips.cc/paper/2022/hash/4a36c3c51af11ed9f34615b81edb5bbc-Abstract-Conference.html">MACE 原论文</a></article><article><h3>中文输入与作业示例</h3><a href="https://www.bigbrosci.com/zh-cn/latest/">大师兄科研网 · Learn VASP the Hard Way</a> · <a href="https://www.bigbrosci.com/zh-cn/latest/LVASPTHW/Ex2.7/">输入文件检查</a></article></div></section>
