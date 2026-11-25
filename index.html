@@ -71,6 +71,12 @@
   .k-phase-result{color:var(--teal);font-weight:750}
   #reference-files .callout + .panel{margin-top:1rem}
   .template-previews .step-file{margin:.65rem 0 .35rem}
+
+  #dimer-validation .dv-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem;padding:0;list-style:none;counter-reset:dv-step}
+  #dimer-validation .dv-flow li{counter-increment:dv-step;border:1px solid var(--line);background:var(--soft);padding:.65rem;border-radius:8px;font-size:.88rem}
+  #dimer-validation .dv-flow li::before{content:counter(dv-step) " · ";color:var(--teal);font-weight:750}
+  #dimer-validation .two-up{margin-block:.85rem}
+  @media(max-width:620px){#dimer-validation .dv-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body id="top">
@@ -153,6 +159,7 @@
       <div class="toc-children">
         <a href="#catalysis">Nørskov 催化理论</a>
         <a href="#path">过渡态与路径</a>
+        <a href="#dimer-validation">Dimer 过渡态验证</a>
         <a href="#implicit-solvent">隐式溶剂与巨正则 DFT</a>
         <a href="#constant-potential">恒电势</a>
         <a href="#catmap">CatMAP 微观动力学</a>
@@ -2005,6 +2012,7 @@ print("Open the trajectory with: ase gui ase-cu-md/md.traj")
     <li>运行原生 VASP 的 <code>IBRION = 44</code>。从 <code>OUTCAR</code> 的 <code>DIMER METHOD</code> 段检查曲率和收敛。轴向曲率应为负。</li>
     <li>另开频率计算目录，把优化后的原子坐标写入新 <code>POSCAR</code>，仅保留结构段。将 <code>INCAR.freq</code> 改名为 <code>INCAR</code>，沿用同一套 <code>POTCAR</code>、<code>KPOINTS</code>。检查是否有一个明显的伞形翻转虚频，并分辨接近零的平移和转动模式。</li>
   </ol>
+  <p class="source-row"><a href="#dimer-validation">找到候选后，按完整流程验证 →</a></p>
   <div class="tabs" role="group" aria-label="选择 NH₃ Dimer 输入文件">
     <button type="button" data-dimer-file="incar" aria-pressed="true">INCAR</button>
     <button type="button" data-dimer-file="poscar" aria-pressed="false">POSCAR</button>
@@ -3397,7 +3405,7 @@ LREAL  = .FALSE.</code></pre></div>
     setStep(0);
   })();
   </script>
-<p class="source-row"><a href="#examples" data-ex-jump="neb">打开 Si 空位 NEB / CI-NEB 输入示例</a><a href="#dimer-starter">打开 NH₃ Dimer 输入示例</a></p>
+<p class="source-row"><a href="#examples" data-ex-jump="neb">打开 Si 空位 NEB / CI-NEB 输入示例</a><a href="#dimer-starter">打开 NH₃ Dimer 输入示例</a><a href="#dimer-validation">Dimer 之后的验证步骤 →</a></p>
   <h3 class="ts-methods-heading">手上有什么结构，就从哪里开始</h3>
   <div class="ts-method-table" tabindex="0" role="region" aria-label="过渡态方法对比">
     <table>
@@ -3548,6 +3556,75 @@ LREAL  = .FALSE.</code></pre></div>
     updatePath();
   })();
 </script>
+
+<section id="dimer-validation" class="chapter" aria-labelledby="dimer-validation-title">
+  <p class="section-kicker">过渡态验证</p>
+  <h2 id="dimer-validation-title">Dimer 找到“山口”后，怎样确认它连对了两边？</h2>
+  <p class="section-intro">把候选构型想成山口上的小球。沿一条方向推，它会往两侧下坡，朝别的方向推则会回到山口附近。计算里依次确认三件事：小球是否已经停稳，是否只有一个下坡方向，以及这条下坡路两头各到了哪里。</p>
+  <ol class="dv-flow" aria-label="Dimer 过渡态验证顺序">
+    <li>检查 Dimer 收敛</li><li>算频率并播放振型</li><li>向正负两侧追踪</li><li>确认端点与势垒</li>
+  </ol>
+  <p class="source-row"><a href="#dimer-starter">NH₃ Dimer 起步文件</a><a href="#pt-ts">Pt(111) 两侧跟随脚本</a><a href="#vibrations">振动与自由能修正</a></p>
+
+  <h3 class="subheading" id="dimer-check-force">先确认搜索确实收敛了</h3>
+  <p>保留 Dimer 的结构、输出和轴方向，在独立目录做后续检查。核对电子自洽与离子收敛，检查最后几步的最大残余力，以及轴向曲率是否稳定为负。原生 VASP 的 <code>IBRION = 44</code> 看 <code>OUTCAR</code> 中的 <code>DIMER METHOD</code>。VTST Dimer 还可看 <code>DIMCAR</code> 的力、转动力和曲率。达到 <code>NSW</code> 上限时，应继续判断搜索是否满足收敛条件。</p>
+  <p>可以把 <code>EDIFF = 1E-8</code>、<code>EDIFFG = -0.005</code>（eV、eV/Å）作为精修的测试起点，结合体系和势垒精度调整。继续精修仍用原来的 Dimer 方法与相容设置。保存的结构若来自 VTST，轴方向和文件格式也按 VTST 的约定处理。最终用同一结构的普通静态计算复核真实原子力和能量，可以排查搜索力变换或力噪声的影响。</p>
+  <p class="note">VTST 的 <code>DIMCAR</code> 能量列有自己的定义。用于势垒的能量，取相容静态计算的同一种 VASP 能量项，并记录展宽处理。</p>
+
+  <h3 class="subheading" id="dimer-check-frequency">再算频率，确认那一个虚频在做什么</h3>
+  <p>在频率目录把收敛构型写成 POSCAR，保留原子顺序和选择性固定标记。频率用的 POSCAR 只保留结构部分，把 Dimer 额外附加的方向段移出。保持泛函、PAW、k 网格、磁态、U、色散、溶剂与电荷定义一致，再用下面的有限差分设置计算 Hessian。</p>
+  <div class="step-file"><header><strong>INCAR.freq · 并入同一体系的电子设置</strong></header><pre tabindex="0"><code>IBRION = 5        # 有限差分，可按 Selective dynamics 只位移选定方向
+NSW    = 1
+ISIF   = 2        # 固定晶胞
+NFREE  = 2        # 正、负位移的中心差分
+POTIM  = 0.015    # Å，另试如 0.01、0.02 以检查频率是否稳定
+EDIFF  = 1E-8     # 电子收敛要足以给出稳定的力
+PREC   = Accurate
+LREAL  = .FALSE.
+NWRITE = 3        # 便于读取除以 sqrt(mass) 后的振型</code></pre></div>
+  <p>分析完整自由度且可利用对称性时，可以用 <code>IBRION = 6</code>。选择性位移按当前 VASP 文档使用 <code>IBRION = 5</code>，标记作用在 Hessian 的笛卡尔分量。表面只动吸附物及邻近原子得到的是局部检验，扩展可动区域可以继续检查基底是否引入其他不稳定方向。</p>
+  <div class="two-up">
+    <article class="panel"><h3>频率表里看什么？</h3><p><code>OUTCAR</code> 中 <code>f/i</code> 标识虚频。理想的一阶鞍点在所分析的自由度中只有一个有物理意义的负曲率模式。它应在合理的位移量、k 网格和电子收敛下保持稳定。极小虚频要结合振型和数值收敛判断，孤立分子的近零平移与转动也可能贡献小数值噪声。</p></article>
+    <article class="panel"><h3>振型动画里看什么？</h3><p>H/Pt(111) 扩散应看到 H 沿目标位点之间运动，周围 Pt 可协同调整。NH₃ 翻转应看到伞面翻到另一侧。观察主要是整块板层漂移、分子整体转动还是目标成键变化，再决定该模式的物理含义。</p></article>
+  </div>
+
+  <h3 class="subheading" id="dimer-check-connectivity">沿虚频向两边下坡，确认连接的两个结构</h3>
+  <p>一种直观做法是在鞍点的原始坐标上，沿虚频的笛卡尔位移方向分别加和减一小段，再从两份新结构各自做普通结构优化。方向的正负号由本征矢量的约定决定，两边分别连到哪里要看实际结果。</p>
+  <div class="science-equation"><math display="block" aria-label="正负起始构型等于鞍点坐标加减归一化虚频方向乘位移幅度"><mrow><msubsup><mi mathvariant="bold">R</mi><mi>i</mi><mo>±</mo></msubsup><mo>=</mo><msub><mi mathvariant="bold">R</mi><mrow><mi>i</mi><mo>,</mo><mtext>TS</mtext></mrow></msub><mo>±</mo><mi>δ</mi><mfrac><msub><mi mathvariant="bold">u</mi><mi>i</mi></msub><mrow><munder><mi mathvariant="normal">max</mi><mi>j</mi></munder><mo>|</mo><msub><mi mathvariant="bold">u</mi><mi>j</mi></msub><mo>|</mo></mrow></mfrac></mrow></math></div>
+  <p>这里 <em>u</em><sub>i</sub> 是第 i 个原子的笛卡尔位移方向，δ 控制单个原子的最大位移，可从 0.03–0.10 Å 做小幅测试。若拿到的是质量加权本征矢，先除以 √m 转成位移方向。读取 <code>Eigenvectors after division by SQRT(mass)</code> 段时，使用其 <code>dx dy dz</code> 即可。两边保留同一套固定原子，先检查原子间距离，再开始优化。</p>
+  <div class="step-file"><header><strong>INCAR.relax · 正负两侧各跑一份</strong></header><pre tabindex="0"><code>IBRION = 2        # 从位移后的结构普通下坡优化
+NSW    = 300      # 示例上限，结束后核对是否真的收敛
+ISIF   = 2
+EDIFF  = 1E-8
+EDIFFG = -0.01    # eV/Å，按端点与势垒精度测试
+# 沿用一致的电子结构模型和固定原子设置</code></pre></div>
+  <p>需要沿质量加权最陡下降路径追踪时，可以用 VASP 的 IRC。对收敛的原生改进 Dimer，按官方格式把含不稳定方向的 CONTCAR 用作 IRC 的 POSCAR，在两个目录分别设置：</p>
+  <div class="step-file"><header><strong>INCAR.irc · 两个方向独立运行</strong></header><pre tabindex="0"><code>IBRION        = 40
+ISIF          = 2
+IRC_DIRECTION = -1       # 另一目录改为 +1
+IRC_STOP      = 20       # 示例，需检查终止原因
+IRC_VNORM0    = 0.0005   # Å/fs，越小通常越接近 IRC，也更费步数
+NSW           = 5000     # 示例步数上限
+EDIFF         = 1E-8
+# 保留本体系的泛函、k 点、势库、磁性等电子设置</code></pre></div>
+  <p>IRC 的输入需要鞍点和不稳定方向。若结构来自 VTST、ASE 或其他搜索程序，先按 VASP 原生格式准备方向。检查两侧能量、原子运动与停止原因，必要时把尾部结构继续普通优化到极小点。正负轻推再优化可检查终点归属，IRC 还提供逐步的下坡路径。</p>
+
+  <h3 class="subheading" id="dimer-check-result">端点、势垒和异常情况怎么判断？</h3>
+  <div class="table-shell" role="region" tabindex="0" aria-label="Dimer 验证结果与后续处理">
+    <table><thead><tr><th scope="col">看到的结果</th><th scope="col">接下来做什么</th></tr></thead><tbody>
+      <tr><th scope="row">一个稳定的目标虚频，两侧到达目标端点</th><td>复核端点残余力与稳定性，用一致的静态设置算初态、鞍点和末态能量。记录连接关系，再评估数值收敛。</td></tr>
+      <tr><th scope="row">两个以上明显虚频</th><td>检查未充分优化的方向、磁态、固定区域和力精度。精修鞍点或沿额外不稳定方向调整初猜，再重新验证。</td></tr>
+      <tr><th scope="row">没有明显的目标虚频</th><td>对照 Dimer 轴曲率、频率位移、固定自由度与 SCF 收敛，判断是否落到极小值或数值误差掩盖了软模。</td></tr>
+      <tr><th scope="row">正负两侧都回到同一个终点</th><td>先按周期边界、对称性和原子位点对应比较结构。对称等价的两个吸附位点也可对应扩散。若确实同一路径回同一盆地，重查振型方向、位移幅度及追踪轨迹。</td></tr>
+      <tr><th scope="row">两侧连接了另外一对结构</th><td>按实际路径识别这个鞍点的反应。想验证原先的过程，可重新给 Dimer 初猜方向，或用已知端点做 NEB 交叉检查。</td></tr>
+    </tbody></table>
+  </div>
+  <p>比较端点时看吸附位点、关键键长、配位、原子映射与磁态。单纯的平移、分子整体转动或跨周期折回，应先对齐再解释。势垒按同一种能量定义计算：</p>
+  <div class="science-equation"><math display="block"><mrow><msub><mrow><mi mathvariant="normal">Δ</mi><msup><mi>E</mi><mo>‡</mo></msup></mrow><mtext>正向</mtext></msub><mo>=</mo><msub><mi>E</mi><mtext>TS</mtext></msub><mo>−</mo><msub><mi>E</mi><mtext>初态</mtext></msub><mo>，</mo><mspace width="1em"/><msub><mrow><mi mathvariant="normal">Δ</mi><msup><mi>E</mi><mo>‡</mo></msup></mrow><mtext>逆向</mtext></msub><mo>=</mo><msub><mi>E</mi><mtext>TS</mtext></msub><mo>−</mo><msub><mi>E</mi><mtext>末态</mtext></msub></mrow></math></div>
+  <p>还可以检查“正向势垒 − 逆向势垒”是否等于末态与初态的能量差。定量前测试 ENCUT、k 点、板层／超胞和力阈值。计算自由能势垒时，用相容的振动与热化学修正，并将反应方向虚频从稳定振动配分函数中排除。恒电势路径按同一电子化学势比较相应巨势。更换初猜或对照其他路径，可以继续寻找更低势垒的通道。</p>
+  <p class="callout">保存一份验证记录，写上最终力和曲率、虚频数值与振型、正负追踪终点、静态能量定义、放开的原子范围，以及关键参数的收敛结果。</p>
+  <p class="source-row"><a href="https://vasp.at/wiki/Improved_dimer_method">VASP · 原生改进 Dimer</a><a href="https://henkelmangroup.github.io/vtsttools/dimer.html">VTST · Dimer 输出</a><a href="https://vasp.at/wiki/Phonons_from_finite_differences">VASP · 有限差分频率</a><a href="https://vasp.at/wiki/Intrinsic-reaction-coordinate_calculations">VASP · IRC</a><a href="https://vasp.at/tutorials/latest/transition_states/part1/">VASP · 过渡态教程</a></p>
+</section>
 
 <section id="implicit-solvent" class="chapter" aria-labelledby="implicit-solvent-title">
   <p class="section-kicker">溶剂与电化学界面</p>
@@ -4220,7 +4297,7 @@ for folder in ts-follow-minus ts-follow-plus; do
 done
 # 等两侧优化都完成，再对比端点。
 python prepare_ts.py verify</code></pre></div>
-      <p>通过这些检查后，用同一电子能量定义报告 <strong>正向势垒 E<sub>TS</sub> − E<sub>fcc</sub></strong> 和 <strong>逆向势垒 E<sub>TS</sub> − E<sub>hcp</sub></strong>。虚频检查只覆盖放开的自由度。氢质量小，零点振动和隧穿可能改变位点排序或扩散速率。</p></div>
+      <p>通过这些检查后，用同一电子能量定义报告 <strong>正向势垒 E<sub>TS</sub> − E<sub>fcc</sub></strong> 和 <strong>逆向势垒 E<sub>TS</sub> − E<sub>hcp</sub></strong>。虚频检查只覆盖放开的自由度。完整判断步骤见<a href="#dimer-validation">Dimer 过渡态验证</a>。氢质量小，零点振动和隧穿可能改变位点排序或扩散速率。</p></div>
     </details>
   </div>
   <p class="note">想看温度如何改变这条路径的统计权重？接着读<a href="#free-energy">自由能与增强采样</a>。</p>
