@@ -77,6 +77,14 @@
   #dimer-validation .dv-flow li::before{content:counter(dv-step) " · ";color:var(--teal);font-weight:750}
   #dimer-validation .two-up{margin-block:.85rem}
   @media(max-width:620px){#dimer-validation .dv-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+  #project-dimer-case .zc-intro{margin-block:1rem}
+  #project-dimer-case .zc-energy{margin-block:1rem}
+  #project-dimer-case .zc-energy-table table{min-width:650px}
+  #project-dimer-case .zc-energy-table td{font-variant-numeric:tabular-nums}
+  #project-dimer-case .quiz .step-file{margin-block:.7rem}
+  #project-dimer-case .panel ul{margin-block:.5rem 0}
+  #project-dimer-case .panel li+li{margin-top:.45rem}
 </style>
 </head>
 <body id="top">
@@ -160,6 +168,7 @@
         <a href="#catalysis">Nørskov 催化理论</a>
         <a href="#path">过渡态与路径</a>
         <a href="#dimer-validation">Dimer 过渡态验证</a>
+        <a href="#project-dimer-case">真实案例 · Zn 表面加氢</a>
         <a href="#implicit-solvent">隐式溶剂与巨正则 DFT</a>
         <a href="#constant-potential">恒电势</a>
         <a href="#catmap">CatMAP 微观动力学</a>
@@ -3564,7 +3573,8 @@ LREAL  = .FALSE.</code></pre></div>
   <ol class="dv-flow" aria-label="Dimer 过渡态验证顺序">
     <li>检查 Dimer 收敛</li><li>算频率并播放振型</li><li>向正负两侧追踪</li><li>确认端点与势垒</li>
   </ol>
-  <p class="source-row"><a href="#dimer-starter">NH₃ Dimer 起步文件</a><a href="#pt-ts">Pt(111) 两侧跟随脚本</a><a href="#vibrations">振动与自由能修正</a></p>
+  <p class="source-row"><a href="#project-dimer-case">用真实 Zn 表面案例逐项核对</a></p>
+<p class="source-row"><a href="#dimer-starter">NH₃ Dimer 起步文件</a><a href="#pt-ts">Pt(111) 两侧跟随脚本</a><a href="#vibrations">振动与自由能修正</a></p>
 
   <h3 class="subheading" id="dimer-check-force">先确认搜索确实收敛了</h3>
   <p>保留 Dimer 的结构、输出和轴方向，在独立目录做后续检查。核对电子自洽与离子收敛，检查最后几步的最大残余力，以及轴向曲率是否稳定为负。原生 VASP 的 <code>IBRION = 44</code> 看 <code>OUTCAR</code> 中的 <code>DIMER METHOD</code>。VTST Dimer 还可看 <code>DIMCAR</code> 的力、转动力和曲率。达到 <code>NSW</code> 上限时，应继续判断搜索是否满足收敛条件。</p>
@@ -3624,6 +3634,100 @@ EDIFF         = 1E-8
   <p>还可以检查“正向势垒 − 逆向势垒”是否等于末态与初态的能量差。定量前测试 ENCUT、k 点、板层／超胞和力阈值。计算自由能势垒时，用相容的振动与热化学修正，并将反应方向虚频从稳定振动配分函数中排除。恒电势路径按同一电子化学势比较相应巨势。更换初猜或对照其他路径，可以继续寻找更低势垒的通道。</p>
   <p class="callout">保存一份验证记录，写上最终力和曲率、虚频数值与振型、正负追踪终点、静态能量定义、放开的原子范围，以及关键参数的收敛结果。</p>
   <p class="source-row"><a href="https://vasp.at/wiki/Improved_dimer_method">VASP · 原生改进 Dimer</a><a href="https://henkelmangroup.github.io/vtsttools/dimer.html">VTST · Dimer 输出</a><a href="https://vasp.at/wiki/Phonons_from_finite_differences">VASP · 有限差分频率</a><a href="https://vasp.at/wiki/Intrinsic-reaction-coordinate_calculations">VASP · IRC</a><a href="https://vasp.at/tutorials/latest/transition_states/part1/">VASP · 过渡态教程</a></p>
+</section>
+
+
+<section id="project-dimer-case" class="chapter" aria-labelledby="project-dimer-title">
+  <p class="section-kicker">真实项目 · 从记录学验收</p>
+  <h2 id="project-dimer-title">Zn 表面加氢：把 Dimer 验证走一遍</h2>
+  <p class="section-intro">刚学的验证流程，放进一个真实计算里会是什么样？这里选取项目看板中的 <code>Zn_M4_HO</code>：表面中间体接过一个 H，形成 C—H 键，末态被核对为 1,3-丙二醇。记录包含同一个 Dimer 候选、目标虚模、双侧 DFT 优化和统一单点，适合逐项练习。</p>
+  <p class="note">数据冻结于 2026-11-25，来源为本地 project-tracker 的人工审核快照；网页只摘录这一例。<code>3HPA_HO*</code> 沿用项目物种标签，星号表示表面吸附。77 个原子的组成为 C₃H₈O₂Zn₆₄。以下图形只概括关键成键与离散能量。</p>
+
+  <div class="two-up zc-intro">
+    <article class="panel"><h3>先盯住一根键</h3><p>把 C67 当成“等着接氢的位点”，H77 是要过来的氢。初态两者相距 <strong>2.681 Å</strong>；末态缩短到 <strong>1.109 Å</strong>。这与形成 C—H 键一致，项目还核对了完整 C₃ 链、两端羟基和其他键，才确认末态身份。</p><p class="note">编号从 1 开始；ASE 对应索引为 66、76。距离按周期体系的最小镜像（MIC）计算。这两个键长是本例数据，判断其他反应要结合各自的化学环境。</p></article>
+    <figure class="viz"><svg viewBox="0 0 420 210" role="img" aria-labelledby="zc-bond-title zc-bond-desc"><title id="zc-bond-title">Zn表面关键C—H键形成示意</title><desc id="zc-bond-desc">初态C67和H77相隔2.681埃，末态相隔1.109埃。圆球是符号示意，未使用真实原子坐标。</desc><rect x="10" y="143" width="400" height="42" rx="8" fill="#d6ded4"/><g fill="#546863" font-size="14" text-anchor="middle"><text x="210" y="169">Zn 表面 · 其余原子省略</text><text x="105" y="27">初态 IS</text><text x="315" y="27">末态 FS</text></g><g stroke="#166052" stroke-width="2"><path d="M60 95H150" stroke-dasharray="4 5"/><path d="M292 95H337" stroke-width="5"/></g><g fill="#192d2a"><circle cx="60" cy="95" r="18"/><circle cx="292" cy="95" r="18"/></g><g fill="#f6e6d8" stroke="#b64426" stroke-width="2"><circle cx="150" cy="95" r="12"/><circle cx="337" cy="95" r="12"/></g><g fill="#192d2a" font-size="14" text-anchor="middle"><text x="60" y="65">C67</text><text x="150" y="65">H77</text><text x="292" y="65">C67</text><text x="337" y="65">H77</text><text x="105" y="130">2.681 Å</text><text x="315" y="130">1.109 Å</text></g><path d="M191 92H227M220 85L227 92L220 99" fill="none" stroke="#b64426" stroke-width="2"/><text x="210" y="204" fill="#546863" font-size="12" text-anchor="middle">关键键示意 · 原子位置不按真实坐标或比例绘制</text></svg><figcaption>看键长，再看完整成键拓扑。屏幕上“画了一根键”只是显示规则，化学身份还要逐原子确认。</figcaption></figure>
+  </div>
+
+  <h3 class="subheading">四份证据，各回答一个问题</h3>
+  <div class="table-shell" role="region" aria-label="Zn真实案例的四阶段验证" tabindex="0"><table><thead><tr><th scope="col">阶段／作业</th><th scope="col">实际记录</th><th scope="col">读这份结果时想什么</th></tr></thead><tbody>
+    <tr><th scope="row">Dimer 候选<br><code>219281</code></th><td>原生改进 Dimer，<code>IBRION=44</code>；中心最大活动原子力 <strong>0.01857 eV/Å</strong>，活动自由度 <strong>135</strong>。</td><td>找到了力较小的候选。继续看它沿哪个方向不稳定、两侧去了哪里。</td></tr>
+    <tr><th scope="row">独立频率<br><code>219341</code></th><td>吸附物部分 Hessian（PHVA），<strong>1 个 941.580i cm⁻¹</strong> 目标虚频；39 个自由度、79/79 次力评估。</td><td>看板记录振型对应目标 C67—H77 成键。按同一个模式编号去重，避免把 VASP 两种振型打印重复计数。</td></tr>
+    <tr><th scope="row">负／正两侧普通优化<br><code>219580 / 219581</code></th><td>沿同一虚模分别轻推，最大初始原子位移约 <strong>0.05 Å</strong>；原子顺序与晶胞一致。分别经过 <strong>128 / 277</strong> 个离子步，力降至 <strong>0.01867 / 0.01991 eV/Å</strong>。</td><td>本例负侧回到 <code>3HPA_HO* + H*</code>，正侧形成 1,3-PG。符号由振型方向决定，换个本征矢符号，两边名称就会互换。</td></tr>
+    <tr><th scope="row">统一静态能量<br><code>195110 / 195109 / 195166</code></th><td>同批 IS／TS／FS 单点，<code>EDIFF=1E-7</code>，对应源结构已核对。</td><td>把同一种能量项放在同一把尺子上，再算正逆势垒和反应能。</td></tr>
+  </tbody></table></div>
+  <p class="callout"><strong>“一个虚频”在哪个范围内成立？</strong> 频率作业把全部 64 个 Zn 原子固定，只留下 13 个吸附物原子的 39 个自由度：中心差分需要 2 × 39 + 1 = 79 次力评估。Dimer 与双侧优化的记录则有 135 个活动自由度。因此，目前的单虚频证据只覆盖吸附物子空间；还应扩展到原来允许活动的基底原子，检查是否有额外不稳定方向。</p>
+
+  <h3 class="subheading">把三个能量放在同一把尺子上</h3>
+  <div class="viz zc-energy"><svg viewBox="0 0 660 300" role="img" aria-labelledby="zc-energy-title zc-energy-desc"><title id="zc-energy-title">三个离散结构的相对电子能量</title><desc id="zc-energy-desc">初态为零，过渡态高0.525659电子伏，末态低1.702865电子伏。正向势垒0.525659电子伏，逆向2.228524电子伏；图中没有连续路径。</desc><g stroke="#d6ded4" stroke-width="1"><path d="M76 56H617M76 104H617M76 197H617M76 261H617"/></g><path d="M76 30V272" stroke="#546863" stroke-width="1.5"/><g fill="#546863" font-size="13"><text x="15" y="60">+0.526</text><text x="48" y="109">0</text><text x="18" y="265">−1.703</text><text x="14" y="20">ΔE / eV</text></g><g stroke="#166052" stroke-width="5" stroke-linecap="round"><path d="M125 104H225"/><path d="M290 56H390"/><path d="M478 261H578"/></g><g fill="#166052"><circle cx="175" cy="104" r="6"/><circle cx="340" cy="56" r="6"/><circle cx="528" cy="261" r="6"/></g><g fill="#192d2a" font-size="15" text-anchor="middle"><text x="175" y="90">IS · 0</text><text x="340" y="42">TS · +0.526</text><text x="528" y="246">FS · −1.703</text></g><g stroke="#b64426" stroke-width="1.8" fill="none"><path d="M254 56V104M248 56H260M248 104H260M430 56V261M424 56H436M424 261H436"/></g><g fill="#b64426" font-size="13"><text x="96" y="150">正向 ΔE‡ = 0.526 eV</text><text x="454" y="151">逆向 ΔE‡</text><text x="454" y="171">2.229 eV</text></g><text x="340" y="294" fill="#546863" font-size="13" text-anchor="middle">只展示 IS / TS / FS 三个结构 · 横向间距没有反应坐标意义</text></svg><figcaption>这里没有画一条平滑“山路”，因为快照提供的是离散结构与双侧优化证据。完整的反应路径形状需要 IRC 或收敛 NEB 等进一步计算。</figcaption></div>
+  <div class="table-shell zc-energy-table" role="region" aria-label="同批单点能量与残余力" tabindex="0"><table><thead><tr><th scope="col">结构</th><th scope="col">单点作业</th><th scope="col">记录 E0 / eV</th><th scope="col">相对 IS / eV</th><th scope="col">静态最大力 / eV·Å⁻¹</th></tr></thead><tbody><tr><th scope="row">IS</th><td>195110</td><td>-157.44813331</td><td>+0.000000</td><td>0.01857</td></tr><tr><th scope="row">TS</th><td>195109</td><td>-156.92247427</td><td>+0.525659</td><td>0.01825</td></tr><tr><th scope="row">FS</th><td>195166</td><td>-159.15099823</td><td>-1.702865</td><td>0.02108</td></tr></tbody></table></div>
+  <p class="note">使用项目记录的同一种 E0 项；<code>ISMEAR=1</code>、<code>SIGMA=0.2 eV</code>。精确定量仍要检查 k 网格、展宽、截断能与几何收敛；不要把不同能量项或优化途中能量混进这张表。</p>
+  <div class="science-equation"><math display="block" aria-label="正向电子能垒等于过渡态能量减初态能量，等于0.525659电子伏"><mrow><msubsup><mi>ΔE</mi><mtext>正向</mtext><mo>‡</mo></msubsup><mo>=</mo><msub><mi>E</mi><mtext>TS</mtext></msub><mo>−</mo><msub><mi>E</mi><mtext>IS</mtext></msub><mo>=</mo><mn>0.525659</mn><mspace width=".3em"/><mtext>eV</mtext></mrow></math></div>
+  <p>逆向是 <strong>2.228524 eV</strong>，反应能是 <strong>−1.702865 eV</strong>。用未四舍五入的数据核算：正向势垒减逆向势垒，恰好等于反应能。可以把初态理解为出发的平台：这一步先翻过约 0.526 eV 的坎，再落到更低的平台；倒着回来就要爬得更高。</p>
+
+  <h3 class="subheading">实际设置长什么样？</h3>
+  <p>下面保留这次项目采用的关键参数，帮助把“算法名”和“输入行”对上。共同电子设置为 PBE（<code>GGA=PE</code>）＋ D3(BJ)（<code>IVDW=12</code>）、<code>ENCUT=450 eV</code>、<code>ISPIN=1</code>、<code>LREAL=.FALSE.</code>、<code>ISYM=0</code>，未开启隐式溶剂。具体精度要随体系测试。</p>
+  <details class="quiz"><summary>展开四阶段的带注释设置摘录</summary><div class="step-file"><header><strong>settings-excerpt.txt · 历史设置与适用范围</strong></header><pre tabindex="0"><code># Zn_M4_HO项目记录中的关键设置摘录（2026-11-25）
+# 这些是历史实际设置，数值精度和可动区域仍需收敛测试。
+# 不是可直接运行的一套输入；缺实际结构、KPOINTS和PAW标识。
+
+[共同电子设置]
+GGA = PE             # PBE泛函
+IVDW = 12            # D3(BJ)色散
+ENCUT = 450          # eV，项目采用值
+PREC = Accurate
+ISPIN = 1            # 项目采用非自旋极化
+ISYM = 0
+LREAL = .FALSE.
+ISMEAR = 1
+SIGMA = 0.2          # eV，需检查展宽及k点收敛
+NELM = 240
+LSOL = .FALSE.       # 本例未开启隐式溶剂
+
+[Dimer，219281；原结构135活动自由度]
+IBRION = 44
+EDIFF = 1E-6
+EDIFFG = -0.020       # eV/Å
+DIMER_DIST = 0.010
+FINDIFF = 1
+STEP_MAX = 0.015
+NSW = 160
+
+[频率，219341；固定全部Zn，只检查39个吸附物自由度]
+IBRION = 5
+EDIFF = 1E-6
+POTIM = 0.015         # Å，有限差分位移
+NFREE = 2
+NSW = 1
+NWRITE = 3
+# 原频率记录 ISTART=1, ICHARG=0；续算文件需要匹配，不能照抄到空目录。
+
+[正负扰动后普通优化，219580/219581；原结构135活动自由度]
+IBRION = 2
+EDIFF = 1E-6
+EDIFFG = -0.02
+POTIM = 0.10
+NSW = 300
+# 实际沿虚模的初始最大原子位移约0.05 Å，正负各一份；不是POTIM参数。
+
+[同设置静态能量，195110/195109/195166]
+IBRION = -1
+NSW = 0
+EDIFF = 1E-7
+ISTART = 0
+ICHARG = 2
+# 数据采用记录的同一种E0项；不能与优化途中能量或其他展宽能量项混算。
+</code></pre></div><p>完整重跑还需原始 IS／TS／FS 坐标、选择性固定标记、实际 KPOINTS 网格、PAW 势标识和相容的 Dimer 方向。此次本地审核快照没有提供这些文件的完整副本；摘录中没有补造它们。</p></details>
+
+  <h3 class="subheading">怎样给这个案例写结论？</h3>
+  <div class="two-up">
+    <article class="panel"><h3>已有证据支持</h3><p>同一个候选在吸附物 PHVA 范围内有一个目标虚频；沿该虚模正负扰动后的实际 DFT 优化连接到经成键拓扑核对的两端。同设置单点给出约 <strong>0.526 eV 的局部正向电子能垒</strong>。</p><p>这就是把“力小”“虚模正确”“两侧接对”“能量统一”四件事逐一落实。原快照中包含部分历史状态字段，本文采用该候选最终 <code>barrierAudit</code> 与对应作业记录交叉核对。</p></article>
+    <article class="panel"><h3>接着补什么更扎实？</h3><ul><li>扩大 Hessian 到原可动原子范围，检查其余不稳定方向，测试频率位移与电子精度。</li><li>FS 原优化力低于 0.02 eV/Å，但较紧电子精度的静态复算为 <strong>0.02108 eV/Å</strong>。统一要求 0.02 时，短段精修 FS，再更新单点与势垒。</li><li>需要路径细节时补严格 IRC 或 NEB；比较其他通道再判断是否存在更低势垒。</li><li>需要 ΔG‡ 时补相容的端点振动、零点能、热、熵与标准态修正，见<a href="#free-energy">自由能栏目</a>。</li></ul></article>
+  </div>
+  <p class="callout">可以这样记录：“2026-11-25 冻结快照支持 Zn_M4_HO 的吸附物 PHVA 目标虚模与双侧局部连接，统一静态 E0 正向能垒为 0.525659 eV；完整活动空间的一阶鞍点检查、端点精修与热化学校正仍有后续工作。”</p>
+  <p><a class="cta primary" id="zn-real-case-download" download="zn-dimer-real-case.zip" href="data:application/zip;base64,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">下载案例摘录与核算脚本（ZIP）</a></p>
+  <p class="note">含能量 CSV、经过筛选的证据 JSON、中文注释设置摘录、README 与 Python 标准库核算脚本；无需联网即可核算。包内未包含原始结构与轨迹，不能直接重跑 VASP。参阅<a href="#reference-slurm">已有 Slurm 模板</a>与<a href="#dimer-validation">完整验证流程</a>。</p>
+  <details class="quiz"><summary>本例从哪些文件提取？</summary><p>本地项目的 <code>audits/2026-11-25-TS-manual-review/</code>：<code>current_canonical.json</code> 提供候选与最终势垒核查；<code>live29.json</code> 提供 Dimer、频率和双侧优化设置；<code>live27.json</code> 交叉核对统一单点；<code>launch_validation.json</code> 核对虚模位移、原子顺序与晶胞；<code>ASE_GUI人工审核教程.md</code> 提供逐步审核说明。下载包记录这些源文件的 SHA-256，可回到原项目核对。本文为已有记录的教学整理，没有运行新的 VASP 作业。</p></details>
+  <p class="source-row"><a href="https://vasp.at/wiki/Improved_dimer_method">VASP · 原生改进 Dimer</a><a href="https://vasp.at/wiki/Phonons_from_finite_differences">VASP · 有限差分频率</a><a href="https://vasp.at/wiki/IVDW">VASP · 色散参数</a><a href="https://vasp.at/wiki/Smearing_technique">VASP · 展宽与能量比较</a></p>
 </section>
 
 <section id="implicit-solvent" class="chapter" aria-labelledby="implicit-solvent-title">
